@@ -2,14 +2,17 @@ package ar.com.anura.plugins.backgroundmode;
 
 import android.Manifest;
 import android.content.Context;
+import android.os.Build;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import com.getcapacitor.JSObject;
+import com.getcapacitor.PermissionState;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
 import com.getcapacitor.annotation.Permission;
+import com.getcapacitor.annotation.PermissionCallback;
 
 @CapacitorPlugin(
     name = "BackgroundMode",
@@ -75,7 +78,6 @@ public class BackgroundModePlugin extends Plugin {
     @Override
     public void handleOnDestroy() {
         backgroundMode.onDestroy();
-        unsetAppListeners();
     }
 
     @PluginMethod

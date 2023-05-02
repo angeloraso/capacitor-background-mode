@@ -19,6 +19,7 @@ import android.provider.Settings;
 import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationManagerCompat;
 
 public class BackgroundMode {
 
@@ -101,7 +102,7 @@ public class BackgroundMode {
     }
 
     public boolean areNotificationsEnabled() {
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(mContext);
         return notificationManager.areNotificationsEnabled();
     }
 
