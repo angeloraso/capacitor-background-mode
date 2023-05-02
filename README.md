@@ -2,6 +2,8 @@
 
 Capacitor plugin to enable background mode
 
+This plugin replace to [capacitor-plugin-background-mode](https://github.com/angeloraso/capacitor-plugin-background-mode)
+
 ## Install
 
 ```bash
