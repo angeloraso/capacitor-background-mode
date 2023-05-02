@@ -1,5 +1,6 @@
 package ar.com.anura.plugins.backgroundmode;
 
+import android.Manifest;
 import android.content.Context;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,6 +9,7 @@ import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
+import com.getcapacitor.annotation.Permission;
 
 @CapacitorPlugin(
     name = "BackgroundMode",
