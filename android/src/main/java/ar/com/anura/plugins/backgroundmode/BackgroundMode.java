@@ -28,7 +28,7 @@ public class BackgroundMode {
     private final AppCompatActivity mActivity;
     private final View mWebView;
     private BackgroundModeSettings mSettings;
-    private ForegroundService foregroundService;
+    private BackgroundModeService foregroundService;
     private boolean mIsBound = false;
     private PowerManager.WakeLock wakeLock;
 
@@ -57,7 +57,7 @@ public class BackgroundMode {
 
     private final ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder iBinder) {
-            foregroundService = ((ForegroundService.LocalBinder) iBinder).getService();
+            foregroundService = ((BackgroundModeService.LocalBinder) iBinder).getService();
             foregroundService.updateNotification(mSettings);
             mIsBound = true;
         }
@@ -143,7 +143,7 @@ public class BackgroundMode {
             return;
         }
 
-        Intent intent = new Intent(mContext, ForegroundService.class);
+        Intent intent = new Intent(mContext, BackgroundModeService.class);
 
         try {
             mContext.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
@@ -158,7 +158,7 @@ public class BackgroundMode {
             return;
         }
 
-        Intent intent = new Intent(mContext, ForegroundService.class);
+        Intent intent = new Intent(mContext, BackgroundModeService.class);
         mContext.unbindService(mConnection);
         mContext.stopService(intent);
         mIsBound = false;

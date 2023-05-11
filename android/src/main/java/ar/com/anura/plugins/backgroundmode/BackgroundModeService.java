@@ -23,7 +23,7 @@ import androidx.core.app.NotificationCompat;
  * something the user is actively aware of and thus not a candidate for killing
  * when low on memory.
  */
-public class ForegroundService extends Service {
+public class BackgroundModeService extends Service {
 
     // Fixed ID for the 'foreground' notification
     public static final int NOTIFICATION_ID = -574543954;
@@ -34,7 +34,7 @@ public class ForegroundService extends Service {
     private PowerManager.WakeLock mWakeLock;
     private BackgroundModeSettings mSettings;
 
-    public ForegroundService() {}
+    public BackgroundModeService() {}
 
     /**
      * Allow clients to call on to the service.
@@ -46,8 +46,8 @@ public class ForegroundService extends Service {
 
     class LocalBinder extends Binder {
 
-        ForegroundService getService() {
-            return ForegroundService.this;
+        BackgroundModeService getService() {
+            return BackgroundModeService.this;
         }
     }
 
@@ -93,7 +93,7 @@ public class ForegroundService extends Service {
     private void keepAwake() {
         boolean isSilent = mSettings.getSilent();
         if (!isSilent) {
-            startForeground(NOTIFICATION_ID, makeNotification());
+            startForeground(NOTIFICATION_ID, createNotification());
         }
 
         PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
@@ -118,8 +118,8 @@ public class ForegroundService extends Service {
      * Create a notification as the visible part to be able to put the service
      * in a foreground state by using the default settings.
      */
-    private Notification makeNotification() {
-        return makeNotification(mSettings);
+    private Notification createNotification() {
+        return createNotification(mSettings);
     }
 
     /**
@@ -128,9 +128,9 @@ public class ForegroundService extends Service {
      *
      * @param settings The config settings
      */
-    private Notification makeNotification(BackgroundModeSettings settings) {
+    private Notification createNotification(BackgroundModeSettings settings) {
         // use channelId for Oreo and higher
-        String CHANNEL_ID = "capacitor-plugin-background-mode-id";
+        String CHANNEL_ID = "anuradev-capacitor-background-mode-id";
         // The user-visible name of the channel.
         CharSequence name = settings.getChannelName();
         // The user-visible description of the channel.
@@ -174,7 +174,7 @@ public class ForegroundService extends Service {
 
         Boolean allowClose = settings.getAllowClose();
         if (allowClose) {
-            final Intent closeAppIntent = new Intent("com.backgroundmode.close" + pkgName);
+            final Intent closeAppIntent = new Intent("ar.com.anura.plugins.backgroundmode.close" + pkgName);
             final PendingIntent closeIntent = PendingIntent.getBroadcast(context, 1337, closeAppIntent, PendingIntent.FLAG_IMMUTABLE);
             final String closeIconName = settings.getCloseIcon();
             final String closeTitle = settings.getCloseTitle();
@@ -208,6 +208,11 @@ public class ForegroundService extends Service {
             notification.setContentIntent(contentIntent);
         }
 
+        // Android 12
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            notification.setForegroundServiceBehavior(Notification.FOREGROUND_SERVICE_IMMEDIATE);
+        }
+
         return notification.build();
     }
 
@@ -223,7 +228,7 @@ public class ForegroundService extends Service {
             return;
         }
 
-        Notification notification = makeNotification(settings);
+        Notification notification = createNotification(settings);
         getNotificationManager().notify(NOTIFICATION_ID, notification);
     }
 

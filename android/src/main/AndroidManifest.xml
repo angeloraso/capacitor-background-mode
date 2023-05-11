@@ -10,7 +10,7 @@
     <application>
 
         <service
-            android:name=".ForegroundService"
+            android:name=".BackgroundModeService"
             android:enabled="true"
             android:exported="true">
         </service>

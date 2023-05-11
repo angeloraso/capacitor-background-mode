@@ -9,10 +9,10 @@ public class BackgroundModeSettings {
     private boolean resume = true;
     private boolean silent = false;
     private boolean hidden = true;
-    private String color = "55335A";
+    private String color = "157f1f";
     private String icon = "icon";
-    private String channelName = "capacitor-background-mode";
-    private String channelDescription = "Capacitor background mode notification";
+    private String channelName = "anuradev-capacitor-background-mode";
+    private String channelDescription = "Anuradev Capacitor background mode notification";
     private boolean allowClose = false;
     private String closeIcon = "close-icon";
     private String closeTitle = "Close";
