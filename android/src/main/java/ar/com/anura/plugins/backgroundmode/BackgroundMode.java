@@ -70,7 +70,7 @@ public class BackgroundMode {
 
     public void onStop() {
         mInBackground = true;
-        if (!isEnabled()) {
+        if (!isEnabled() || !isIgnoringBatteryOptimizations()) {
             return;
         }
 
@@ -128,7 +128,7 @@ public class BackgroundMode {
     public void enable() {
         mIsDisabled = false;
 
-        if (mInBackground) {
+        if (mInBackground  && isIgnoringBatteryOptimizations()) {
             startService();
         }
     }
@@ -139,7 +139,7 @@ public class BackgroundMode {
     }
 
     private void startService() {
-        if (mIsDisabled || mIsBound || mConnection == null || !isIgnoringBatteryOptimizations()) {
+        if (mIsDisabled || mIsBound || mConnection == null) {
             return;
         }
 
