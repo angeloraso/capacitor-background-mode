@@ -139,7 +139,7 @@ public class BackgroundMode {
     }
 
     private void startService() {
-        if (mIsDisabled || mIsBound || mConnection == null) {
+        if (mIsDisabled || mIsBound || mConnection == null || !isIgnoringBatteryOptimizations()) {
             return;
         }
 
