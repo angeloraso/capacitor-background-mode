@@ -128,7 +128,7 @@ public class BackgroundMode {
     public void enable() {
         mIsDisabled = false;
 
-        if (mInBackground) {
+        if (mInBackground  && isIgnoringBatteryOptimizations()) {
             startService();
         }
     }
