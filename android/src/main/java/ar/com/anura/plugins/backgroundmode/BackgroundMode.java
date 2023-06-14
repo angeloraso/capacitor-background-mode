@@ -70,7 +70,7 @@ public class BackgroundMode {
 
     public void onStop() {
         mInBackground = true;
-        if (!isEnabled()) {
+        if (!isEnabled() || !isIgnoringBatteryOptimizations()) {
             return;
         }
 
