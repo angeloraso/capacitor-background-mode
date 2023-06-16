@@ -13,7 +13,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.view.View;
@@ -145,12 +148,13 @@ public class BackgroundMode {
 
         Intent intent = new Intent(mContext, BackgroundModeService.class);
 
-        try {
-            mContext.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-            mContext.startForegroundService(intent);
-        } catch (Exception e) {
-            e.printStackTrace();
+        mContext.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+          new Handler(Looper.getMainLooper()).post(() -> mContext.startForegroundService(intent));
+        } else {
+          mContext.startService(intent);
         }
+
     }
 
     private void stopService() {
