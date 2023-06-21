@@ -32,7 +32,7 @@ public class BackgroundMode {
     private final View mWebView;
     private BackgroundModeSettings mSettings;
     private BackgroundModeService foregroundService;
-    private boolean mIsBound = false;
+    private boolean mShouldUnbind = false;
     private PowerManager.WakeLock wakeLock;
 
     @Nullable
@@ -62,12 +62,10 @@ public class BackgroundMode {
         public void onServiceConnected(ComponentName className, IBinder iBinder) {
             foregroundService = ((BackgroundModeService.LocalBinder) iBinder).getService();
             foregroundService.updateNotification(mSettings);
-            mIsBound = true;
         }
 
         public void onServiceDisconnected(ComponentName className) {
             foregroundService = null;
-            mIsBound = false;
         }
     };
 
@@ -142,7 +140,7 @@ public class BackgroundMode {
     }
 
     private void startService() {
-        if (mIsDisabled || mIsBound || mConnection == null) {
+        if (mIsDisabled || mShouldUnbind || mConnection == null) {
             return;
         }
 
@@ -150,22 +148,25 @@ public class BackgroundMode {
 
         mContext.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-          new Handler(Looper.getMainLooper()).post(() -> mContext.startForegroundService(intent));
+          new Handler(Looper.getMainLooper()).post(() -> {
+            mContext.startForegroundService(intent);
+            mShouldUnbind = true;
+          });
         } else {
           mContext.startService(intent);
+          mShouldUnbind = true;
         }
-
     }
 
     private void stopService() {
-        if (!mIsBound || mConnection == null) {
+        if (!mShouldUnbind || mConnection == null) {
             return;
         }
 
         Intent intent = new Intent(mContext, BackgroundModeService.class);
         mContext.unbindService(mConnection);
         mContext.stopService(intent);
-        mIsBound = false;
+        mShouldUnbind = false;
     }
 
     public BackgroundModeSettings getSettings() {
@@ -174,7 +175,7 @@ public class BackgroundMode {
 
     public void setSettings(BackgroundModeSettings settings) {
         mSettings = settings;
-        if (mInBackground && mIsBound) {
+        if (mInBackground && mShouldUnbind) {
             foregroundService.updateNotification(settings);
         }
     }
