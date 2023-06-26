@@ -259,72 +259,89 @@ public class BackgroundModePlugin extends Plugin {
     }
 
     private BackgroundModeSettings buildSettings(BackgroundModeSettings settings, PluginCall call) {
-        if (call.hasOption("title")) {
-            settings.setTitle((call.getString("title")));
+        String title = call.getString("title");
+        if (title != null) {
+          settings.setTitle(title);
         }
 
-        if (call.hasOption("text")) {
-            settings.setText((call.getString("text")));
+        String text = call.getString("text");
+        if (text != null) {
+          settings.setText(text);
         }
 
-        if (call.hasOption("subText")) {
-            settings.setSubText((call.getString("subText")));
+        String subText = call.getString("subText");
+        if (subText != null) {
+          settings.setSubText(subText);
         }
 
-        if (call.hasOption("bigText")) {
-            settings.setBigText((call.getBoolean("bigText")));
+        Boolean bigText = call.getBoolean("bigText");
+        if (bigText != null) {
+          settings.setBigText(bigText);
         }
 
-        if (call.hasOption("resume")) {
-            settings.setResume((call.getBoolean("resume")));
+        Boolean resume = call.getBoolean("resume");
+        if (resume != null) {
+          settings.setResume(resume);
         }
 
-        if (call.hasOption("silent")) {
-            settings.setSilent((call.getBoolean("silent")));
+        Boolean silent = call.getBoolean("silent");
+        if (silent != null) {
+          settings.setSilent(silent);
         }
 
-        if (call.hasOption("hidden")) {
-            settings.setHidden((call.getBoolean("hidden")));
+        Boolean hidden = call.getBoolean("hidden");
+        if (hidden != null) {
+          settings.setHidden(hidden);
         }
 
-        if (call.hasOption("color")) {
-            settings.setColor((call.getString("color")));
+        String color = call.getString("color");
+        if (color != null) {
+          settings.setColor(color);
         }
 
-        if (call.hasOption("icon")) {
-            settings.setIcon((call.getString("icon")));
+        String icon = call.getString("icon");
+        if (icon != null) {
+          settings.setIcon(icon);
         }
 
-        if (call.hasOption("channelName")) {
-            settings.setChannelName((call.getString("channelName")));
+        String channelName = call.getString("channelName");
+        if (channelName != null) {
+          settings.setChannelName(channelName);
         }
 
-        if (call.hasOption("channelDescription")) {
-            settings.setChannelDescription((call.getString("channelDescription")));
+        String channelDescription = call.getString("channelDescription");
+        if (channelDescription != null) {
+          settings.setChannelDescription(channelDescription);
         }
 
-        if (call.hasOption("allowClose")) {
-            settings.setAllowClose((call.getBoolean("allowClose")));
+        Boolean allowClose = call.getBoolean("allowClose");
+        if (allowClose != null) {
+          settings.setAllowClose(allowClose);
         }
 
-        if (call.hasOption("closeIcon")) {
-            settings.setCloseIcon((call.getString("closeIcon")));
+        String closeIcon = call.getString("closeIcon");
+        if (closeIcon != null) {
+          settings.setCloseIcon(closeIcon);
         }
 
-        if (call.hasOption("closeTitle")) {
-            settings.setCloseTitle((call.getString("closeTitle")));
+        String closeTitle = call.getString("closeTitle");
+        if (closeTitle != null) {
+          settings.setCloseTitle(closeTitle);
         }
 
-        if (call.hasOption("showWhen")) {
-            settings.setShowWhen((call.getBoolean("showWhen")));
+        Boolean showWhen = call.getBoolean("showWhen");
+        if (showWhen != null) {
+          settings.setShowWhen(showWhen);
         }
 
-        if (call.hasOption("visibility")) {
-            settings.setVisibility((call.getString("visibility")));
+        String visibility = call.getString("visibility");
+        if (visibility != null) {
+          settings.setVisibility(visibility);
         }
 
-        if (call.hasOption("disableWebViewOptimization")) {
-            settings.setDisableWebViewOptimization((call.getBoolean("disableWebViewOptimization")));
+        Boolean disableWebViewOptimization = call.getBoolean("disableWebViewOptimization");
+        if (disableWebViewOptimization != null) {
+          settings.setDisableWebViewOptimization(disableWebViewOptimization);
         }
 
         return settings;
