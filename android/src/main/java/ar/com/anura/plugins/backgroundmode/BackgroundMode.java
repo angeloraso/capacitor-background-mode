@@ -175,7 +175,7 @@ public class BackgroundMode {
 
     public void setSettings(BackgroundModeSettings settings) {
         mSettings = settings;
-        if (mInBackground && mShouldUnbind) {
+        if (mInBackground && mShouldUnbind && foregroundService != null) {
             foregroundService.updateNotification(settings);
         }
     }
