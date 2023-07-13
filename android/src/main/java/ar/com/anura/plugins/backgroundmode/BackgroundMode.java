@@ -20,6 +20,9 @@ import android.os.Looper;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.view.View;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationManagerCompat;
@@ -51,11 +54,18 @@ public class BackgroundMode {
     // Flag indicates if the plugin is enabled or disabled
     private boolean mIsDisabled = true;
 
+    private Callback disableBatteryOptimizationCallback;
+    private ActivityResultLauncher<Intent> activityResultLauncher;
+
     BackgroundMode(final AppCompatActivity activity, final Context context, final View webView) {
         mActivity = activity;
         mContext = context;
         mWebView = webView;
         mSettings = new BackgroundModeSettings();
+
+      activityResultLauncher = activity.registerForActivityResult(
+        new ActivityResultContracts.StartActivityForResult(),
+        result -> disableBatteryOptimizationCallback.execute(isIgnoringBatteryOptimizations()));
     }
 
     private final ServiceConnection mConnection = new ServiceConnection() {
@@ -188,17 +198,18 @@ public class BackgroundMode {
     }
 
     @SuppressLint("BatteryLife")
-    public void disableBatteryOptimizations() {
+    public void requestDisableBatteryOptimizations(Callback callback) {
         if (isIgnoringBatteryOptimizations()) {
-            return;
+            callback.execute(true);
         }
 
+        disableBatteryOptimizationCallback = callback;
         String pkgName = mActivity.getPackageName();
         Intent intent = new Intent();
         intent.setAction(ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
         intent.setData(Uri.parse("package:" + pkgName));
 
-        mActivity.startActivity(intent);
+        activityResultLauncher.launch(intent);
     }
 
     public void enableWebViewOptimizations() {
