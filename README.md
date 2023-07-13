@@ -23,8 +23,8 @@ npx cap sync
 * [`requestForegroundPermission()`](#requestforegroundpermission)
 * [`checkNotificationsPermission()`](#checknotificationspermission)
 * [`requestNotificationsPermission()`](#requestnotificationspermission)
-* [`isIgnoringBatteryOptimizations()`](#isignoringbatteryoptimizations)
-* [`disableBatteryOptimizations()`](#disablebatteryoptimizations)
+* [`checkBatteryOptimizations()`](#checkbatteryoptimizations)
+* [`requestDisableBatteryOptimizations()`](#requestdisablebatteryoptimizations)
 * [`enableWebViewOptimizations()`](#enablewebviewoptimizations)
 * [`disableWebViewOptimizations()`](#disablewebviewoptimizations)
 * [`moveToBackground()`](#movetobackground)
@@ -131,22 +131,24 @@ requestNotificationsPermission() => Promise<PermissionStatus>
 --------------------
 
 
-### isIgnoringBatteryOptimizations()
+### checkBatteryOptimizations()
 
 ```typescript
-isIgnoringBatteryOptimizations() => Promise<{ isIgnoring: boolean; }>
+checkBatteryOptimizations() => Promise<{ disabled: boolean; }>
 ```
 
-**Returns:** <code>Promise&lt;{ isIgnoring: boolean; }&gt;</code>
+**Returns:** <code>Promise&lt;{ disabled: boolean; }&gt;</code>
 
 --------------------
 
 
-### disableBatteryOptimizations()
+### requestDisableBatteryOptimizations()
 
 ```typescript
-disableBatteryOptimizations() => Promise<void>
+requestDisableBatteryOptimizations() => Promise<{ disabled: boolean; }>
 ```
+
+**Returns:** <code>Promise&lt;{ disabled: boolean; }&gt;</code>
 
 --------------------
 
