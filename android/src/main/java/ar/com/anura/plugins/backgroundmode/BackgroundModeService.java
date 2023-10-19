@@ -130,7 +130,8 @@ public class BackgroundModeService extends Service {
      */
     private Notification createNotification(BackgroundModeSettings settings) {
         // use channelId for Oreo and higher
-        String CHANNEL_ID = "anuradev-capacitor-background-mode-id";
+        String OLD_CHANNEL_ID = "anuradev-capacitor-background-mode-id";
+        String CHANNEL_ID = "anuradev-capacitor-background-mode-id-v2";
         // The user-visible name of the channel.
         CharSequence name = settings.getChannelName();
         // The user-visible description of the channel.
@@ -142,8 +143,11 @@ public class BackgroundModeService extends Service {
 
         // Configure the notification channel.
         mChannel.setDescription(description);
+        mChannel.setShowBadge(false);
 
-        getNotificationManager().createNotificationChannel(mChannel);
+        NotificationManager notificationManager = getNotificationManager();
+        notificationManager.deleteNotificationChannel(OLD_CHANNEL_ID);
+        notificationManager.createNotificationChannel(mChannel);
         String title = settings.getTitle();
         String text = settings.getText();
         boolean bigText = settings.getBigText();
