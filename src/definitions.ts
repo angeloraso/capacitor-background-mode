@@ -46,10 +46,10 @@ export interface BackgroundModePlugin {
   addListener(
     eventName: 'appInBackground',
     listenerFunc: () => void,
-  ): Promise<PluginListenerHandle> & PluginListenerHandle;
+  ): Promise<PluginListenerHandle>;
   addListener(
     eventName: 'appInForeground',
     listenerFunc: () => void,
-  ): Promise<PluginListenerHandle> & PluginListenerHandle;
+  ): Promise<PluginListenerHandle>;
   removeAllListeners(): Promise<void>;
 }

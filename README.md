@@ -243,7 +243,7 @@ unlock() => Promise<void>
 ### addListener('appInBackground', ...)
 
 ```typescript
-addListener(eventName: 'appInBackground', listenerFunc: () => void) => Promise<PluginListenerHandle> & PluginListenerHandle
+addListener(eventName: 'appInBackground', listenerFunc: () => void) => Promise<PluginListenerHandle>
 ```
 
 | Param              | Type                           |
@@ -251,7 +251,7 @@ addListener(eventName: 'appInBackground', listenerFunc: () => void) => Promise<P
 | **`eventName`**    | <code>'appInBackground'</code> |
 | **`listenerFunc`** | <code>() =&gt; void</code>     |
 
-**Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt; & <a href="#pluginlistenerhandle">PluginListenerHandle</a></code>
+**Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt;</code>
 
 --------------------
 
@@ -259,7 +259,7 @@ addListener(eventName: 'appInBackground', listenerFunc: () => void) => Promise<P
 ### addListener('appInForeground', ...)
 
 ```typescript
-addListener(eventName: 'appInForeground', listenerFunc: () => void) => Promise<PluginListenerHandle> & PluginListenerHandle
+addListener(eventName: 'appInForeground', listenerFunc: () => void) => Promise<PluginListenerHandle>
 ```
 
 | Param              | Type                           |
@@ -267,7 +267,7 @@ addListener(eventName: 'appInForeground', listenerFunc: () => void) => Promise<P
 | **`eventName`**    | <code>'appInForeground'</code> |
 | **`listenerFunc`** | <code>() =&gt; void</code>     |
 
-**Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt; & <a href="#pluginlistenerhandle">PluginListenerHandle</a></code>
+**Returns:** <code>Promise&lt;<a href="#pluginlistenerhandle">PluginListenerHandle</a>&gt;</code>
 
 --------------------
 
