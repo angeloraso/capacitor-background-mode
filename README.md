@@ -11,6 +11,17 @@ npm install @anuradev/capacitor-background-mode
 npx cap sync
 ```
 
+## Adding Service and Permission to Manifest File
+
+Before proceeding, please review the documentation available here. It outlines the requirement for specifying appropriate foreground service types if your app targets Android 14. It's important to note that multiple types can be combined, similar to previous Android versions.
+
+Furthermore, I utilized the specialUse foreground type, as shown in the attached image. Ensure that you select the suitable type based on your app's functionality. Examples of such types include camera, location, phonecall, mediaPlayback, and shortService.
+
+
+<img width="904" alt="pr anura" src="https://github.com/angeloraso/capacitor-background-mode/assets/4382405/20f0c063-0d8d-4733-bf46-87e03d085482">
+
+
+
 ## API
 
 <docgen-index>
@@ -328,7 +339,9 @@ removeAllListeners() => Promise<void>
 
 Make all properties in T optional
 
-<code>{ [P in keyof T]?: T[P]; }</code>
+<code>{
+ [P in keyof T]?: T[P];
+ }</code>
 
 
 #### PermissionState
