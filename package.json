@@ -1,6 +1,6 @@
 {
   "name": "@anuradev/capacitor-background-mode",
-  "version": "7.0.0",
+  "version": "7.0.1",
   "description": "Capacitor plugin to enable background mode",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
