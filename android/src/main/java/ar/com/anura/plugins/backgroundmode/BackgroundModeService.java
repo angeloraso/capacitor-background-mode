@@ -16,6 +16,10 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
 /**
@@ -24,6 +28,7 @@ import androidx.core.app.NotificationCompat;
  * when low on memory.
  */
 public class BackgroundModeService extends Service {
+    private final String TAG = "BackgroundModeService";
 
     // Fixed ID for the 'foreground' notification
     public static final int NOTIFICATION_ID = -574543954;
@@ -97,7 +102,7 @@ public class BackgroundModeService extends Service {
         }
 
         PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
-        mWakeLock = pm.newWakeLock(PARTIAL_WAKE_LOCK, "backgroundmode:wakelock");
+        mWakeLock = pm.newWakeLock(PARTIAL_WAKE_LOCK, TAG + ":wakelock");
         mWakeLock.acquire();
     }
 
@@ -128,22 +133,13 @@ public class BackgroundModeService extends Service {
      *
      * @param settings The config settings
      */
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private Notification createNotification(BackgroundModeSettings settings) {
         // use channelId for Oreo and higher
         String OLD_CHANNEL_ID = "anuradev-capacitor-background-mode-id";
         String CHANNEL_ID = "anuradev-capacitor-background-mode-id-v2";
         // The user-visible name of the channel.
-        CharSequence name = settings.getChannelName();
-        // The user-visible description of the channel.
-        String description = settings.getChannelDescription();
-
-        int importance = NotificationManager.IMPORTANCE_LOW;
-
-        NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
-
-        // Configure the notification channel.
-        mChannel.setDescription(description);
-        mChannel.setShowBadge(false);
+        NotificationChannel mChannel = getNotificationChannel(settings, CHANNEL_ID);
 
         NotificationManager notificationManager = getNotificationManager();
         notificationManager.deleteNotificationChannel(OLD_CHANNEL_ID);
@@ -152,7 +148,7 @@ public class BackgroundModeService extends Service {
         String text = settings.getText();
         boolean bigText = settings.getBigText();
         String subText = settings.getSubText();
-        Boolean showWhen = settings.getShowWhen();
+        boolean showWhen = settings.getShowWhen();
         Visibility visibility = settings.getVisibility();
 
         Context context = getApplicationContext();
@@ -172,11 +168,11 @@ public class BackgroundModeService extends Service {
             .setSmallIcon(smallIcon)
             .setShowWhen(showWhen);
 
-        if (!subText.equals("")) {
+        if (!subText.isEmpty()) {
             notification.setSubText(subText);
         }
 
-        Boolean allowClose = settings.getAllowClose();
+        boolean allowClose = settings.getAllowClose();
         if (allowClose) {
             final Intent closeAppIntent = new Intent("ar.com.anura.plugins.backgroundmode.close" + pkgName);
             final PendingIntent closeIntent = PendingIntent.getBroadcast(context, 1337, closeAppIntent, PendingIntent.FLAG_IMMUTABLE);
@@ -190,7 +186,7 @@ public class BackgroundModeService extends Service {
             notification.addAction(closeAction.build());
         }
 
-        Boolean hidden = settings.getHidden();
+        boolean hidden = settings.getHidden();
         if (hidden) {
             notification.setPriority(NotificationCompat.PRIORITY_MIN);
         }
@@ -204,7 +200,7 @@ public class BackgroundModeService extends Service {
         String hexColor = settings.getColor();
         setColor(notification, hexColor);
 
-        Boolean resume = settings.getResume();
+        boolean resume = settings.getResume();
         if (intent != null && resume) {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             PendingIntent contentIntent = PendingIntent.getActivity(context, NOTIFICATION_ID, intent, PendingIntent.FLAG_IMMUTABLE);
@@ -220,6 +216,31 @@ public class BackgroundModeService extends Service {
         return notification.build();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @NonNull
+    private static NotificationChannel getNotificationChannel(BackgroundModeSettings settings, String CHANNEL_ID) {
+        CharSequence name = settings.getChannelName();
+        // The user-visible description of the channel.
+        String description = settings.getChannelDescription();
+
+        int importance = NotificationManager.IMPORTANCE_LOW;
+
+        NotificationChannel mChannel = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
+        }
+
+        // Configure the notification channel.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            mChannel.setDescription(description);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            mChannel.setShowBadge(false);
+        }
+        assert mChannel != null;
+        return mChannel;
+    }
+
     /**
      * Update the notification.
      *
@@ -232,7 +253,10 @@ public class BackgroundModeService extends Service {
             return;
         }
 
-        Notification notification = createNotification(settings);
+        Notification notification = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            notification = createNotification(settings);
+        }
         getNotificationManager().notify(NOTIFICATION_ID, notification);
     }
 
@@ -297,7 +321,6 @@ public class BackgroundModeService extends Service {
      * @param notification A Notification.Builder instance
      * @param color An hex color (red: FF0000)
      */
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void setColor(NotificationCompat.Builder notification, String color) {
         if (color == null) {
             return;
@@ -307,7 +330,7 @@ public class BackgroundModeService extends Service {
             int aRGB = Integer.parseInt(color, 16) + 0xFF000000;
             notification.setColor(aRGB);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.d(TAG, "setColor error" + e.getMessage());
         }
     }
 
