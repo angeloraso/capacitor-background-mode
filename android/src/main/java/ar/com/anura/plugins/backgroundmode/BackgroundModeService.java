@@ -1,9 +1,9 @@
 package ar.com.anura.plugins.backgroundmode;
 
+import static android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE;
 import static android.os.PowerManager.PARTIAL_WAKE_LOCK;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -19,7 +19,6 @@ import android.os.PowerManager;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
 /**
@@ -98,7 +97,11 @@ public class BackgroundModeService extends Service {
     private void keepAwake() {
         boolean isSilent = mSettings.getSilent();
         if (!isSilent) {
-            startForeground(NOTIFICATION_ID, createNotification());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                startForeground(NOTIFICATION_ID, createNotification(), FOREGROUND_SERVICE_TYPE_SPECIAL_USE);
+            } else {
+                startForeground(NOTIFICATION_ID, createNotification());
+            }
         }
 
         PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
@@ -133,7 +136,6 @@ public class BackgroundModeService extends Service {
      *
      * @param settings The config settings
      */
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private Notification createNotification(BackgroundModeSettings settings) {
         // use channelId for Oreo and higher
         String OLD_CHANNEL_ID = "anuradev-capacitor-background-mode-id";
@@ -216,7 +218,6 @@ public class BackgroundModeService extends Service {
         return notification.build();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @NonNull
     private static NotificationChannel getNotificationChannel(BackgroundModeSettings settings, String CHANNEL_ID) {
         CharSequence name = settings.getChannelName();
@@ -226,18 +227,11 @@ public class BackgroundModeService extends Service {
         int importance = NotificationManager.IMPORTANCE_LOW;
 
         NotificationChannel mChannel = null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
-        }
+        mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
 
         // Configure the notification channel.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            mChannel.setDescription(description);
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            mChannel.setShowBadge(false);
-        }
-        assert mChannel != null;
+        mChannel.setDescription(description);
+        mChannel.setShowBadge(false);
         return mChannel;
     }
 
@@ -254,9 +248,7 @@ public class BackgroundModeService extends Service {
         }
 
         Notification notification = null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            notification = createNotification(settings);
-        }
+        notification = createNotification(settings);
         getNotificationManager().notify(NOTIFICATION_ID, notification);
     }
 

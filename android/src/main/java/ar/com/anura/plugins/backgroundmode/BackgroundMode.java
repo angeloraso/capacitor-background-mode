@@ -1,8 +1,6 @@
 package ar.com.anura.plugins.backgroundmode;
 
 import static android.content.Context.POWER_SERVICE;
-import static android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC;
-import static android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_PHONE_CALL;
 import static android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS;
 import static android.view.WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON;
 import static android.view.WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD;
@@ -163,15 +161,10 @@ public class BackgroundMode {
         Intent intent = new Intent(mContext, BackgroundModeService.class);
 
         mContext.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-          new Handler(Looper.getMainLooper()).post(() -> {
-            mContext.startForegroundService(intent);
-            mShouldUnbind = true;
-          });
-        } else {
-          mContext.startService(intent);
+        new Handler(Looper.getMainLooper()).post(() -> {
+          mContext.startForegroundService(intent);
           mShouldUnbind = true;
-        }
+        });
     }
 
     private void stopService() {
@@ -284,12 +277,8 @@ public class BackgroundMode {
     private void clearScreenAndKeyguardFlags() {
         mActivity.runOnUiThread(
             () -> {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
-                    mActivity.setShowWhenLocked(false);
-                }
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
-                    mActivity.setTurnScreenOn(false);
-                }
+                mActivity.setShowWhenLocked(false);
+                mActivity.setTurnScreenOn(false);
                 mActivity.getWindow().clearFlags(FLAGS);
             }
         );
@@ -335,12 +324,8 @@ public class BackgroundMode {
     private void addScreenAndKeyguardFlags() {
         mActivity.runOnUiThread(
             () -> {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
-                    mActivity.setShowWhenLocked(true);
-                }
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
-                    mActivity.setTurnScreenOn(true);
-                }
+                mActivity.setShowWhenLocked(true);
+                mActivity.setTurnScreenOn(true);
                 mActivity.getWindow().addFlags(FLAGS);
             }
         );
