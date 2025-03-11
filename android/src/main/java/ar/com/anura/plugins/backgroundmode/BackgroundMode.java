@@ -13,10 +13,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.net.Uri;
-import android.os.Build;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.util.Log;
@@ -161,10 +158,8 @@ public class BackgroundMode {
         Intent intent = new Intent(mContext, BackgroundModeService.class);
 
         mContext.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-        new Handler(Looper.getMainLooper()).post(() -> {
-          mContext.startForegroundService(intent);
-          mShouldUnbind = true;
-        });
+        mContext.startForegroundService(intent);
+        mShouldUnbind = true;
     }
 
     private void stopService() {
