@@ -81,6 +81,30 @@
         "slug": "requestnotificationspermission"
       },
       {
+        "name": "checkMicrophonePermission",
+        "signature": "() => Promise<PermissionStatus>",
+        "parameters": [],
+        "returns": "Promise<PermissionStatus>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [
+          "PermissionStatus"
+        ],
+        "slug": "checkmicrophonepermission"
+      },
+      {
+        "name": "requestMicrophonePermission",
+        "signature": "() => Promise<PermissionStatus>",
+        "parameters": [],
+        "returns": "Promise<PermissionStatus>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [
+          "PermissionStatus"
+        ],
+        "slug": "requestmicrophonepermission"
+      },
+      {
         "name": "checkBatteryOptimizations",
         "signature": "() => Promise<{ enabled: boolean; }>",
         "parameters": [],

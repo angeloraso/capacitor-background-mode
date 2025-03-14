@@ -199,11 +199,7 @@ public class BackgroundModePlugin extends Plugin {
 
     @PluginMethod
     public void checkNotificationsPermission(PluginCall call) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU || getPermissionState(BACKGROUND_MODE_NOTIFICATIONS_PERMISSION) == PermissionState.GRANTED) {
-            notificationPermissionCallback(call);
-        } else {
-            super.checkPermissions(call);
-        }
+        notificationPermissionCallback(call);
     }
 
     @PluginMethod
@@ -223,12 +219,12 @@ public class BackgroundModePlugin extends Plugin {
     }
 
     @PluginMethod
-    public void checkMicrophonePermissions(PluginCall call) {
+    public void checkMicrophonePermission(PluginCall call) {
         microphonePermissionCallback(call);
     }
 
     @PluginMethod
-    public void requestMicrophonePermissions(PluginCall call) {
+    public void requestMicrophonePermission(PluginCall call) {
         if (getPermissionState(BACKGROUND_MODE_MICROPHONE_PERMISSION) == PermissionState.GRANTED) {
             microphonePermissionCallback(call);
         } else {

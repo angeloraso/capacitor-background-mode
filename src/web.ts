@@ -18,10 +18,16 @@ export class BackgroundModeWeb
     async setSettings(_settings: Partial<ISettings>): Promise<void>{
       throw this.unimplemented('Not implemented on web.');
     }
+    async checkNotificationsPermission(): Promise<PermissionStatus> {
+      throw this.unimplemented('Not implemented on web.');
+    }
     async requestNotificationsPermission(): Promise<PermissionStatus> {
       throw this.unimplemented('Not implemented on web.');
     }
-    async checkNotificationsPermission(): Promise<PermissionStatus> {
+    async checkMicrophonePermission(): Promise<PermissionStatus> {
+      throw this.unimplemented('Not implemented on web.');
+    }
+    async requestMicrophonePermission(): Promise<PermissionStatus> {
       throw this.unimplemented('Not implemented on web.');
     }
     async checkBatteryOptimizations(): Promise<{enabled: boolean}>{

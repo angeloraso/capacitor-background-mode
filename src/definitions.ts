@@ -29,6 +29,8 @@ export interface BackgroundModePlugin {
   setSettings(settings: Partial<ISettings>): Promise<void>;
   checkNotificationsPermission(): Promise<PermissionStatus>;
   requestNotificationsPermission(): Promise<PermissionStatus>;
+  checkMicrophonePermission(): Promise<PermissionStatus>;
+  requestMicrophonePermission(): Promise<PermissionStatus>;
   checkBatteryOptimizations(): Promise<{enabled: boolean}>;
   requestDisableBatteryOptimizations(): Promise<{enabled: boolean}>;
   enableWebViewOptimizations(): Promise<void>;

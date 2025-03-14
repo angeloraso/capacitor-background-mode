@@ -21,6 +21,8 @@ npx cap sync
 * [`setSettings(...)`](#setsettings)
 * [`checkNotificationsPermission()`](#checknotificationspermission)
 * [`requestNotificationsPermission()`](#requestnotificationspermission)
+* [`checkMicrophonePermission()`](#checkmicrophonepermission)
+* [`requestMicrophonePermission()`](#requestmicrophonepermission)
 * [`checkBatteryOptimizations()`](#checkbatteryoptimizations)
 * [`requestDisableBatteryOptimizations()`](#requestdisablebatteryoptimizations)
 * [`enableWebViewOptimizations()`](#enablewebviewoptimizations)
@@ -100,6 +102,28 @@ checkNotificationsPermission() => Promise<PermissionStatus>
 
 ```typescript
 requestNotificationsPermission() => Promise<PermissionStatus>
+```
+
+**Returns:** <code>Promise&lt;<a href="#permissionstatus">PermissionStatus</a>&gt;</code>
+
+--------------------
+
+
+### checkMicrophonePermission()
+
+```typescript
+checkMicrophonePermission() => Promise<PermissionStatus>
+```
+
+**Returns:** <code>Promise&lt;<a href="#permissionstatus">PermissionStatus</a>&gt;</code>
+
+--------------------
+
+
+### requestMicrophonePermission()
+
+```typescript
+requestMicrophonePermission() => Promise<PermissionStatus>
 ```
 
 **Returns:** <code>Promise&lt;<a href="#permissionstatus">PermissionStatus</a>&gt;</code>
