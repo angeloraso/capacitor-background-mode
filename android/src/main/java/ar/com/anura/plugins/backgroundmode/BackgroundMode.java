@@ -7,12 +7,16 @@ import static android.view.WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD;
 import static android.view.WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED;
 import static android.view.WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
+import android.media.AudioManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.provider.Settings;
@@ -24,6 +28,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 
 public class BackgroundMode {
 
@@ -62,7 +67,7 @@ public class BackgroundMode {
         mWebView = webView;
         mSettings = new BackgroundModeSettings();
 
-      activityResultLauncher = activity.registerForActivityResult(
+        activityResultLauncher = activity.registerForActivityResult(
         new ActivityResultContracts.StartActivityForResult(),
         result -> disableBatteryOptimizationCallback.execute(isIgnoringBatteryOptimizations()));
     }
@@ -80,14 +85,11 @@ public class BackgroundMode {
 
     public void onStop() {
         mInBackground = true;
+        assert backgroundModeEventListener != null;
+        backgroundModeEventListener.onBackgroundModeEvent(EVENT_APP_IN_BACKGROUND);
+
         if (!isEnabled() || !isIgnoringBatteryOptimizations()) {
             return;
-        }
-
-        try {
-            startService();
-        } finally {
-            clearKeyguardFlags();
         }
 
         /**
@@ -101,15 +103,13 @@ public class BackgroundMode {
                         Thread.sleep(1000);
                         mWebView.dispatchWindowVisibilityChanged(View.VISIBLE);
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        Log.d(TAG, "onStop error" + e.getMessage());
                     }
                 }
             );
 
             thread.start();
         }
-        assert backgroundModeEventListener != null;
-        backgroundModeEventListener.onBackgroundModeEvent(EVENT_APP_IN_BACKGROUND);
     }
 
     public boolean areNotificationsEnabled() {
@@ -117,13 +117,28 @@ public class BackgroundMode {
         return notificationManager.areNotificationsEnabled();
     }
 
-    public void onResume() {
-        mInBackground = false;
-        if (!isEnabled()) {
-            return;
+    public boolean isMicrophonePermissionGranted() {
+        boolean recordAudioGranted = ContextCompat.checkSelfPermission(mContext, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
+        boolean foregroundServiceMicrophoneGranted = true;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            foregroundServiceMicrophoneGranted = ContextCompat.checkSelfPermission(mContext, Manifest.permission.FOREGROUND_SERVICE_MICROPHONE) == PackageManager.PERMISSION_GRANTED;
         }
 
-        stopService();
+        return recordAudioGranted && foregroundServiceMicrophoneGranted;
+    }
+
+    public boolean isMicrophoneMuted() {
+        AudioManager audioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+        return audioManager != null && audioManager.isMicrophoneMute();
+    }
+
+    public boolean isMicrophoneEnabled() {
+        return isMicrophonePermissionGranted() && !isMicrophoneMuted();
+    }
+
+    public void onResume() {
+        mInBackground = false;
         assert backgroundModeEventListener != null;
         backgroundModeEventListener.onBackgroundModeEvent(EVENT_APP_IN_FOREGROUND);
     }
@@ -133,16 +148,9 @@ public class BackgroundMode {
         android.os.Process.killProcess(android.os.Process.myPid());
     }
 
-    private void clearKeyguardFlags() {
-        mActivity.runOnUiThread(() -> mActivity.getWindow().clearFlags(FLAG_DISMISS_KEYGUARD));
-    }
-
     public void enable() {
         mIsDisabled = false;
-
-        if (mInBackground  && isIgnoringBatteryOptimizations()) {
-            startService();
-        }
+        startService();
     }
 
     public void disable() {
@@ -214,16 +222,6 @@ public class BackgroundMode {
         // Immediately dispatch visibility changed in case the app
         // has started in the background and is not visible
         mWebView.dispatchWindowVisibilityChanged(View.VISIBLE);
-    }
-
-    public boolean checkForegroundPermission() {
-        return Settings.canDrawOverlays(mActivity);
-    }
-
-    public void requestForegroundPermission() {
-        String pkgName = mActivity.getPackageName();
-        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + pkgName));
-        mActivity.startActivity(intent);
     }
 
     public void moveToBackground() {

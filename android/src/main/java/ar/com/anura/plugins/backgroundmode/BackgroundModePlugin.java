@@ -16,13 +16,17 @@ import com.getcapacitor.annotation.PermissionCallback;
 
 @CapacitorPlugin(
     name = "BackgroundMode",
-    permissions = @Permission(strings = { Manifest.permission.POST_NOTIFICATIONS }, alias = BackgroundModePlugin.BACKGROUND_MODE_PERMISSION)
+    permissions = {
+        @Permission(alias = BackgroundModePlugin.BACKGROUND_MODE_NOTIFICATIONS_PERMISSION, strings = { Manifest.permission.POST_NOTIFICATIONS }),
+        @Permission(alias = BackgroundModePlugin.BACKGROUND_MODE_MICROPHONE_PERMISSION, strings = { Manifest.permission.FOREGROUND_SERVICE_MICROPHONE, Manifest.permission.RECORD_AUDIO })
+    }
 )
 public class BackgroundModePlugin extends Plugin {
 
     private BackgroundMode backgroundMode;
 
-    static final String BACKGROUND_MODE_PERMISSION = "display";
+    static final String BACKGROUND_MODE_NOTIFICATIONS_PERMISSION = "notifications";
+    static final String BACKGROUND_MODE_MICROPHONE_PERMISSION = "microphone";
 
     public void load() {
         AppCompatActivity activity = getActivity();
@@ -153,14 +157,6 @@ public class BackgroundModePlugin extends Plugin {
     }
 
     @PluginMethod
-    public void isActive(PluginCall call) {
-        boolean isActive = backgroundMode.isActive();
-        JSObject res = new JSObject();
-        res.put("activated", isActive);
-        call.resolve(res);
-    }
-
-    @PluginMethod
     public void wakeUp(PluginCall call) {
         backgroundMode.wakeUp();
         call.resolve();
@@ -183,9 +179,9 @@ public class BackgroundModePlugin extends Plugin {
     @PluginMethod
     public void requestDisableBatteryOptimizations(PluginCall call) {
         backgroundMode.requestDisableBatteryOptimizations((boolean isIgnoring) -> {
-          JSObject res = new JSObject();
-          res.put("disabled", isIgnoring);
-          call.resolve(res);
+            JSObject res = new JSObject();
+            res.put("disabled", isIgnoring);
+            call.resolve(res);
         });
     }
 
@@ -202,54 +198,48 @@ public class BackgroundModePlugin extends Plugin {
     }
 
     @PluginMethod
-    public void checkForegroundPermission(PluginCall call) {
-        JSObject permissionsResultJSON = new JSObject();
-        permissionsResultJSON.put(BACKGROUND_MODE_PERMISSION, getPermissionText(backgroundMode.checkForegroundPermission()));
-        call.resolve(permissionsResultJSON);
-    }
-
-    @PluginMethod
-    public void requestForegroundPermission(PluginCall call) {
-        if (getPermissionState(BACKGROUND_MODE_PERMISSION) != PermissionState.GRANTED) {
-            requestPermissionForAlias(BACKGROUND_MODE_PERMISSION, call, "permissionForegroundCallback");
-        }
-    }
-
-    @PermissionCallback
-    private void permissionForegroundCallback(PluginCall call) {
-        JSObject permissionsResultJSON = new JSObject();
-        permissionsResultJSON.put(BACKGROUND_MODE_PERMISSION, getPermissionText(backgroundMode.checkForegroundPermission()));
-        call.resolve(permissionsResultJSON);
-    }
-
-    @PluginMethod
-    public void checkNotificationsPermission(PluginCall call) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            JSObject permissionsResultJSON = new JSObject();
-            permissionsResultJSON.put(BACKGROUND_MODE_PERMISSION, getPermissionText(backgroundMode.areNotificationsEnabled()));
-            call.resolve(permissionsResultJSON);
+    public void checkNotificationsPermissions(PluginCall call) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU || getPermissionState(BACKGROUND_MODE_NOTIFICATIONS_PERMISSION) == PermissionState.GRANTED) {
+            notificationPermissionCallback(call);
         } else {
             super.checkPermissions(call);
         }
     }
 
     @PluginMethod
-    public void requestNotificationsPermission(PluginCall call) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            JSObject permissionsResultJSON = new JSObject();
-            permissionsResultJSON.put(BACKGROUND_MODE_PERMISSION, getPermissionText(backgroundMode.areNotificationsEnabled()));
-            call.resolve(permissionsResultJSON);
+    public void requestNotificationsPermissions(PluginCall call) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU || getPermissionState(BACKGROUND_MODE_NOTIFICATIONS_PERMISSION) == PermissionState.GRANTED) {
+            notificationPermissionCallback(call);
         } else {
-            if (getPermissionState(BACKGROUND_MODE_PERMISSION) != PermissionState.GRANTED) {
-                requestPermissionForAlias(BACKGROUND_MODE_PERMISSION, call, "permissionNotificationsCallback");
-            }
+            requestPermissionForAlias(BACKGROUND_MODE_NOTIFICATIONS_PERMISSION, call, "notificationPermissionCallback");
         }
     }
 
     @PermissionCallback
-    private void permissionNotificationsCallback(PluginCall call) {
+    private void notificationPermissionCallback(PluginCall call) {
         JSObject permissionsResultJSON = new JSObject();
-        permissionsResultJSON.put(BACKGROUND_MODE_PERMISSION, getPermissionText(backgroundMode.areNotificationsEnabled()));
+        permissionsResultJSON.put(BACKGROUND_MODE_NOTIFICATIONS_PERMISSION, getPermissionText(backgroundMode.areNotificationsEnabled()));
+        call.resolve(permissionsResultJSON);
+    }
+
+    @PluginMethod
+    public void checkMicrophonePermissions(PluginCall call) {
+        microphonePermissionCallback(call);
+    }
+
+    @PluginMethod
+    public void requestMicrophonePermissions(PluginCall call) {
+        if (getPermissionState(BACKGROUND_MODE_MICROPHONE_PERMISSION) == PermissionState.GRANTED) {
+            microphonePermissionCallback(call);
+        } else {
+            requestPermissionForAlias(BACKGROUND_MODE_MICROPHONE_PERMISSION, call, "microphonePermissionCallback");
+        }
+    }
+
+    @PermissionCallback
+    private void microphonePermissionCallback(PluginCall call) {
+        JSObject permissionsResultJSON = new JSObject();
+        permissionsResultJSON.put(BACKGROUND_MODE_MICROPHONE_PERMISSION, getPermissionText(backgroundMode.isMicrophoneEnabled()));
         call.resolve(permissionsResultJSON);
     }
 
@@ -264,87 +254,87 @@ public class BackgroundModePlugin extends Plugin {
     private BackgroundModeSettings buildSettings(BackgroundModeSettings settings, PluginCall call) {
         String title = call.getString("title");
         if (title != null) {
-          settings.setTitle(title);
+            settings.setTitle(title);
         }
 
         String text = call.getString("text");
         if (text != null) {
-          settings.setText(text);
+            settings.setText(text);
         }
 
         String subText = call.getString("subText");
         if (subText != null) {
-          settings.setSubText(subText);
+            settings.setSubText(subText);
         }
 
         Boolean bigText = call.getBoolean("bigText");
         if (bigText != null) {
-          settings.setBigText(bigText);
+            settings.setBigText(bigText);
         }
 
         Boolean resume = call.getBoolean("resume");
         if (resume != null) {
-          settings.setResume(resume);
+            settings.setResume(resume);
         }
 
         Boolean silent = call.getBoolean("silent");
         if (silent != null) {
-          settings.setSilent(silent);
+            settings.setSilent(silent);
         }
 
         Boolean hidden = call.getBoolean("hidden");
         if (hidden != null) {
-          settings.setHidden(hidden);
+            settings.setHidden(hidden);
         }
 
         String color = call.getString("color");
         if (color != null) {
-          settings.setColor(color);
+            settings.setColor(color);
         }
 
         String icon = call.getString("icon");
         if (icon != null) {
-          settings.setIcon(icon);
+            settings.setIcon(icon);
         }
 
         String channelName = call.getString("channelName");
         if (channelName != null) {
-          settings.setChannelName(channelName);
+            settings.setChannelName(channelName);
         }
 
         String channelDescription = call.getString("channelDescription");
         if (channelDescription != null) {
-          settings.setChannelDescription(channelDescription);
+            settings.setChannelDescription(channelDescription);
         }
 
         Boolean allowClose = call.getBoolean("allowClose");
         if (allowClose != null) {
-          settings.setAllowClose(allowClose);
+            settings.setAllowClose(allowClose);
         }
 
         String closeIcon = call.getString("closeIcon");
         if (closeIcon != null) {
-          settings.setCloseIcon(closeIcon);
+            settings.setCloseIcon(closeIcon);
         }
 
         String closeTitle = call.getString("closeTitle");
         if (closeTitle != null) {
-          settings.setCloseTitle(closeTitle);
+            settings.setCloseTitle(closeTitle);
         }
 
         Boolean showWhen = call.getBoolean("showWhen");
         if (showWhen != null) {
-          settings.setShowWhen(showWhen);
+            settings.setShowWhen(showWhen);
         }
 
         String visibility = call.getString("visibility");
         if (visibility != null) {
-          settings.setVisibility(visibility);
+            settings.setVisibility(visibility);
         }
 
         Boolean disableWebViewOptimization = call.getBoolean("disableWebViewOptimization");
         if (disableWebViewOptimization != null) {
-          settings.setDisableWebViewOptimization(disableWebViewOptimization);
+            settings.setDisableWebViewOptimization(disableWebViewOptimization);
         }
 
         return settings;
