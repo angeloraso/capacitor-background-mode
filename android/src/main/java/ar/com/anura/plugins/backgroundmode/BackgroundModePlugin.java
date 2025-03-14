@@ -198,7 +198,7 @@ public class BackgroundModePlugin extends Plugin {
     }
 
     @PluginMethod
-    public void checkNotificationsPermissions(PluginCall call) {
+    public void checkNotificationsPermission(PluginCall call) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU || getPermissionState(BACKGROUND_MODE_NOTIFICATIONS_PERMISSION) == PermissionState.GRANTED) {
             notificationPermissionCallback(call);
         } else {
@@ -207,7 +207,7 @@ public class BackgroundModePlugin extends Plugin {
     }
 
     @PluginMethod
-    public void requestNotificationsPermissions(PluginCall call) {
+    public void requestNotificationsPermission(PluginCall call) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU || getPermissionState(BACKGROUND_MODE_NOTIFICATIONS_PERMISSION) == PermissionState.GRANTED) {
             notificationPermissionCallback(call);
         } else {
@@ -238,9 +238,9 @@ public class BackgroundModePlugin extends Plugin {
 
     @PermissionCallback
     private void microphonePermissionCallback(PluginCall call) {
-        JSObject permissionsResultJSON = new JSObject();
-        permissionsResultJSON.put(BACKGROUND_MODE_MICROPHONE_PERMISSION, getPermissionText(backgroundMode.isMicrophoneEnabled()));
-        call.resolve(permissionsResultJSON);
+        JSObject permissionResultJSON = new JSObject();
+        permissionResultJSON.put(BACKGROUND_MODE_MICROPHONE_PERMISSION, getPermissionText(backgroundMode.isMicrophoneEnabled()));
+        call.resolve(permissionResultJSON);
     }
 
     private String getPermissionText(boolean enabled) {
