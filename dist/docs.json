@@ -57,30 +57,6 @@
         "slug": "setsettings"
       },
       {
-        "name": "checkForegroundPermission",
-        "signature": "() => Promise<PermissionStatus>",
-        "parameters": [],
-        "returns": "Promise<PermissionStatus>",
-        "tags": [],
-        "docs": "",
-        "complexTypes": [
-          "PermissionStatus"
-        ],
-        "slug": "checkforegroundpermission"
-      },
-      {
-        "name": "requestForegroundPermission",
-        "signature": "() => Promise<PermissionStatus>",
-        "parameters": [],
-        "returns": "Promise<PermissionStatus>",
-        "tags": [],
-        "docs": "",
-        "complexTypes": [
-          "PermissionStatus"
-        ],
-        "slug": "requestforegroundpermission"
-      },
-      {
         "name": "checkNotificationsPermission",
         "signature": "() => Promise<PermissionStatus>",
         "parameters": [],

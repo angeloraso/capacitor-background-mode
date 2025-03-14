@@ -20,12 +20,6 @@ class BackgroundModeWeb extends core.WebPlugin {
     async setSettings(_settings) {
         throw this.unimplemented('Not implemented on web.');
     }
-    async checkForegroundPermission() {
-        throw this.unimplemented('Not implemented on web.');
-    }
-    async requestForegroundPermission() {
-        throw this.unimplemented('Not implemented on web.');
-    }
     async requestNotificationsPermission() {
         throw this.unimplemented('Not implemented on web.');
     }

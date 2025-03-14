@@ -18,12 +18,6 @@ export class BackgroundModeWeb
     async setSettings(_settings: Partial<ISettings>): Promise<void>{
       throw this.unimplemented('Not implemented on web.');
     }
-    async checkForegroundPermission(): Promise<PermissionStatus>{
-      throw this.unimplemented('Not implemented on web.');
-    }
-    async requestForegroundPermission(): Promise<PermissionStatus>{
-      throw this.unimplemented('Not implemented on web.');
-    }
     async requestNotificationsPermission(): Promise<PermissionStatus> {
       throw this.unimplemented('Not implemented on web.');
     }

@@ -19,8 +19,6 @@ npx cap sync
 * [`disable()`](#disable)
 * [`getSettings()`](#getsettings)
 * [`setSettings(...)`](#setsettings)
-* [`checkForegroundPermission()`](#checkforegroundpermission)
-* [`requestForegroundPermission()`](#requestforegroundpermission)
 * [`checkNotificationsPermission()`](#checknotificationspermission)
 * [`requestNotificationsPermission()`](#requestnotificationspermission)
 * [`checkBatteryOptimizations()`](#checkbatteryoptimizations)
@@ -83,28 +81,6 @@ setSettings(settings: Partial<ISettings>) => Promise<void>
 | Param          | Type                                                                                  |
 | -------------- | ------------------------------------------------------------------------------------- |
 | **`settings`** | <code><a href="#partial">Partial</a>&lt;<a href="#isettings">ISettings</a>&gt;</code> |
-
---------------------
-
-
-### checkForegroundPermission()
-
-```typescript
-checkForegroundPermission() => Promise<PermissionStatus>
-```
-
-**Returns:** <code>Promise&lt;<a href="#permissionstatus">PermissionStatus</a>&gt;</code>
-
---------------------
-
-
-### requestForegroundPermission()
-
-```typescript
-requestForegroundPermission() => Promise<PermissionStatus>
-```
-
-**Returns:** <code>Promise&lt;<a href="#permissionstatus">PermissionStatus</a>&gt;</code>
 
 --------------------
 
