@@ -33,10 +33,10 @@ export interface BackgroundModePlugin {
     checkNotificationsPermission(): Promise<PermissionStatus>;
     requestNotificationsPermission(): Promise<PermissionStatus>;
     checkBatteryOptimizations(): Promise<{
-        disabled: boolean;
+        enabled: boolean;
     }>;
     requestDisableBatteryOptimizations(): Promise<{
-        disabled: boolean;
+        enabled: boolean;
     }>;
     enableWebViewOptimizations(): Promise<void>;
     disableWebViewOptimizations(): Promise<void>;

@@ -106,9 +106,9 @@
       },
       {
         "name": "checkBatteryOptimizations",
-        "signature": "() => Promise<{ disabled: boolean; }>",
+        "signature": "() => Promise<{ enabled: boolean; }>",
         "parameters": [],
-        "returns": "Promise<{ disabled: boolean; }>",
+        "returns": "Promise<{ enabled: boolean; }>",
         "tags": [],
         "docs": "",
         "complexTypes": [],
@@ -116,9 +116,9 @@
       },
       {
         "name": "requestDisableBatteryOptimizations",
-        "signature": "() => Promise<{ disabled: boolean; }>",
+        "signature": "() => Promise<{ enabled: boolean; }>",
         "parameters": [],
-        "returns": "Promise<{ disabled: boolean; }>",
+        "returns": "Promise<{ enabled: boolean; }>",
         "tags": [],
         "docs": "",
         "complexTypes": [],

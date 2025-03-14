@@ -31,8 +31,8 @@ export interface BackgroundModePlugin {
   requestForegroundPermission(): Promise<PermissionStatus>;
   checkNotificationsPermission(): Promise<PermissionStatus>;
   requestNotificationsPermission(): Promise<PermissionStatus>;
-  checkBatteryOptimizations(): Promise<{disabled: boolean}>;
-  requestDisableBatteryOptimizations(): Promise<{disabled: boolean}>;
+  checkBatteryOptimizations(): Promise<{enabled: boolean}>;
+  requestDisableBatteryOptimizations(): Promise<{enabled: boolean}>;
   enableWebViewOptimizations(): Promise<void>;
   disableWebViewOptimizations(): Promise<void>;
   moveToBackground(): Promise<void>;

@@ -12,10 +12,10 @@ export declare class BackgroundModeWeb extends WebPlugin implements BackgroundMo
     requestNotificationsPermission(): Promise<PermissionStatus>;
     checkNotificationsPermission(): Promise<PermissionStatus>;
     checkBatteryOptimizations(): Promise<{
-        disabled: boolean;
+        enabled: boolean;
     }>;
     requestDisableBatteryOptimizations(): Promise<{
-        disabled: boolean;
+        enabled: boolean;
     }>;
     enableWebViewOptimizations(): Promise<void>;
     disableWebViewOptimizations(): Promise<void>;

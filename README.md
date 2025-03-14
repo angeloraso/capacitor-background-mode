@@ -134,10 +134,10 @@ requestNotificationsPermission() => Promise<PermissionStatus>
 ### checkBatteryOptimizations()
 
 ```typescript
-checkBatteryOptimizations() => Promise<{ disabled: boolean; }>
+checkBatteryOptimizations() => Promise<{ enabled: boolean; }>
 ```
 
-**Returns:** <code>Promise&lt;{ disabled: boolean; }&gt;</code>
+**Returns:** <code>Promise&lt;{ enabled: boolean; }&gt;</code>
 
 --------------------
 
@@ -145,10 +145,10 @@ checkBatteryOptimizations() => Promise<{ disabled: boolean; }>
 ### requestDisableBatteryOptimizations()
 
 ```typescript
-requestDisableBatteryOptimizations() => Promise<{ disabled: boolean; }>
+requestDisableBatteryOptimizations() => Promise<{ enabled: boolean; }>
 ```
 
-**Returns:** <code>Promise&lt;{ disabled: boolean; }&gt;</code>
+**Returns:** <code>Promise&lt;{ enabled: boolean; }&gt;</code>
 
 --------------------
 

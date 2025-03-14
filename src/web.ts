@@ -30,10 +30,10 @@ export class BackgroundModeWeb
     async checkNotificationsPermission(): Promise<PermissionStatus> {
       throw this.unimplemented('Not implemented on web.');
     }
-    async checkBatteryOptimizations(): Promise<{disabled: boolean}>{
+    async checkBatteryOptimizations(): Promise<{enabled: boolean}>{
       throw this.unimplemented('Not implemented on web.');
     }
-    async requestDisableBatteryOptimizations(): Promise<{disabled: boolean}>{
+    async requestDisableBatteryOptimizations(): Promise<{enabled: boolean}>{
       throw this.unimplemented('Not implemented on web.');
     }
     async enableWebViewOptimizations(): Promise<void>{
