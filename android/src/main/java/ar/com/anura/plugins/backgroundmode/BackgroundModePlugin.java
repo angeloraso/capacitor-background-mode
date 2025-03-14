@@ -172,7 +172,7 @@ public class BackgroundModePlugin extends Plugin {
     public void checkBatteryOptimizations(PluginCall call) {
         boolean isIgnoring = backgroundMode.isIgnoringBatteryOptimizations();
         JSObject res = new JSObject();
-        res.put("disabled", isIgnoring);
+        res.put("enabled", !isIgnoring);
         call.resolve(res);
     }
 
@@ -180,7 +180,7 @@ public class BackgroundModePlugin extends Plugin {
     public void requestDisableBatteryOptimizations(PluginCall call) {
         backgroundMode.requestDisableBatteryOptimizations((boolean isIgnoring) -> {
             JSObject res = new JSObject();
-            res.put("disabled", isIgnoring);
+            res.put("enabled", !isIgnoring);
             call.resolve(res);
         });
     }
