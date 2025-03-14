@@ -90,10 +90,10 @@ setSettings(settings: Partial<ISettings>) => Promise<void>
 ### checkNotificationsPermission()
 
 ```typescript
-checkNotificationsPermission() => Promise<PermissionStatus>
+checkNotificationsPermission() => Promise<NotificationPermissionStatus>
 ```
 
-**Returns:** <code>Promise&lt;<a href="#permissionstatus">PermissionStatus</a>&gt;</code>
+**Returns:** <code>Promise&lt;<a href="#notificationpermissionstatus">NotificationPermissionStatus</a>&gt;</code>
 
 --------------------
 
@@ -101,10 +101,10 @@ checkNotificationsPermission() => Promise<PermissionStatus>
 ### requestNotificationsPermission()
 
 ```typescript
-requestNotificationsPermission() => Promise<PermissionStatus>
+requestNotificationsPermission() => Promise<NotificationPermissionStatus>
 ```
 
-**Returns:** <code>Promise&lt;<a href="#permissionstatus">PermissionStatus</a>&gt;</code>
+**Returns:** <code>Promise&lt;<a href="#notificationpermissionstatus">NotificationPermissionStatus</a>&gt;</code>
 
 --------------------
 
@@ -112,10 +112,10 @@ requestNotificationsPermission() => Promise<PermissionStatus>
 ### checkMicrophonePermission()
 
 ```typescript
-checkMicrophonePermission() => Promise<PermissionStatus>
+checkMicrophonePermission() => Promise<MicrophonePermissionStatus>
 ```
 
-**Returns:** <code>Promise&lt;<a href="#permissionstatus">PermissionStatus</a>&gt;</code>
+**Returns:** <code>Promise&lt;<a href="#microphonepermissionstatus">MicrophonePermissionStatus</a>&gt;</code>
 
 --------------------
 
@@ -123,10 +123,10 @@ checkMicrophonePermission() => Promise<PermissionStatus>
 ### requestMicrophonePermission()
 
 ```typescript
-requestMicrophonePermission() => Promise<PermissionStatus>
+requestMicrophonePermission() => Promise<MicrophonePermissionStatus>
 ```
 
-**Returns:** <code>Promise&lt;<a href="#permissionstatus">PermissionStatus</a>&gt;</code>
+**Returns:** <code>Promise&lt;<a href="#microphonepermissionstatus">MicrophonePermissionStatus</a>&gt;</code>
 
 --------------------
 
@@ -307,11 +307,18 @@ removeAllListeners() => Promise<void>
 | **`visibility`**                 | <code>'public' \| 'private' \| 'secret'</code> |
 
 
-#### PermissionStatus
+#### NotificationPermissionStatus
 
-| Prop          | Type                                                        |
-| ------------- | ----------------------------------------------------------- |
-| **`display`** | <code><a href="#permissionstate">PermissionState</a></code> |
+| Prop                | Type                                                        |
+| ------------------- | ----------------------------------------------------------- |
+| **`notifications`** | <code><a href="#permissionstate">PermissionState</a></code> |
+
+
+#### MicrophonePermissionStatus
+
+| Prop             | Type                                                        |
+| ---------------- | ----------------------------------------------------------- |
+| **`microphone`** | <code><a href="#permissionstate">PermissionState</a></code> |
 
 
 #### PluginListenerHandle

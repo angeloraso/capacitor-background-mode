@@ -1,6 +1,6 @@
 import { WebPlugin } from '@capacitor/core';
 
-import type { BackgroundModePlugin, ISettings, PermissionStatus } from './definitions';
+import type { BackgroundModePlugin, ISettings, MicrophonePermissionStatus, NotificationPermissionStatus } from './definitions';
 
 export class BackgroundModeWeb
   extends WebPlugin
@@ -18,16 +18,16 @@ export class BackgroundModeWeb
     async setSettings(_settings: Partial<ISettings>): Promise<void>{
       throw this.unimplemented('Not implemented on web.');
     }
-    async checkNotificationsPermission(): Promise<PermissionStatus> {
+    async checkNotificationsPermission(): Promise<NotificationPermissionStatus> {
       throw this.unimplemented('Not implemented on web.');
     }
-    async requestNotificationsPermission(): Promise<PermissionStatus> {
+    async requestNotificationsPermission(): Promise<NotificationPermissionStatus> {
       throw this.unimplemented('Not implemented on web.');
     }
-    async checkMicrophonePermission(): Promise<PermissionStatus> {
+    async checkMicrophonePermission(): Promise<MicrophonePermissionStatus> {
       throw this.unimplemented('Not implemented on web.');
     }
-    async requestMicrophonePermission(): Promise<PermissionStatus> {
+    async requestMicrophonePermission(): Promise<MicrophonePermissionStatus> {
       throw this.unimplemented('Not implemented on web.');
     }
     async checkBatteryOptimizations(): Promise<{enabled: boolean}>{

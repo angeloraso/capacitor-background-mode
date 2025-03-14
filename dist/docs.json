@@ -58,49 +58,49 @@
       },
       {
         "name": "checkNotificationsPermission",
-        "signature": "() => Promise<PermissionStatus>",
+        "signature": "() => Promise<NotificationPermissionStatus>",
         "parameters": [],
-        "returns": "Promise<PermissionStatus>",
+        "returns": "Promise<NotificationPermissionStatus>",
         "tags": [],
         "docs": "",
         "complexTypes": [
-          "PermissionStatus"
+          "NotificationPermissionStatus"
         ],
         "slug": "checknotificationspermission"
       },
       {
         "name": "requestNotificationsPermission",
-        "signature": "() => Promise<PermissionStatus>",
+        "signature": "() => Promise<NotificationPermissionStatus>",
         "parameters": [],
-        "returns": "Promise<PermissionStatus>",
+        "returns": "Promise<NotificationPermissionStatus>",
         "tags": [],
         "docs": "",
         "complexTypes": [
-          "PermissionStatus"
+          "NotificationPermissionStatus"
         ],
         "slug": "requestnotificationspermission"
       },
       {
         "name": "checkMicrophonePermission",
-        "signature": "() => Promise<PermissionStatus>",
+        "signature": "() => Promise<MicrophonePermissionStatus>",
         "parameters": [],
-        "returns": "Promise<PermissionStatus>",
+        "returns": "Promise<MicrophonePermissionStatus>",
         "tags": [],
         "docs": "",
         "complexTypes": [
-          "PermissionStatus"
+          "MicrophonePermissionStatus"
         ],
         "slug": "checkmicrophonepermission"
       },
       {
         "name": "requestMicrophonePermission",
-        "signature": "() => Promise<PermissionStatus>",
+        "signature": "() => Promise<MicrophonePermissionStatus>",
         "parameters": [],
-        "returns": "Promise<PermissionStatus>",
+        "returns": "Promise<MicrophonePermissionStatus>",
         "tags": [],
         "docs": "",
         "complexTypes": [
-          "PermissionStatus"
+          "MicrophonePermissionStatus"
         ],
         "slug": "requestmicrophonepermission"
       },
@@ -403,14 +403,32 @@
       ]
     },
     {
-      "name": "PermissionStatus",
-      "slug": "permissionstatus",
+      "name": "NotificationPermissionStatus",
+      "slug": "notificationpermissionstatus",
       "docs": "",
       "tags": [],
       "methods": [],
       "properties": [
         {
-          "name": "display",
+          "name": "notifications",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [
+            "PermissionState"
+          ],
+          "type": "PermissionState"
+        }
+      ]
+    },
+    {
+      "name": "MicrophonePermissionStatus",
+      "slug": "microphonepermissionstatus",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "microphone",
           "tags": [],
           "docs": "",
           "complexTypes": [

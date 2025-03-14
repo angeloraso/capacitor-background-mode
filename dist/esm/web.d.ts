@@ -1,5 +1,5 @@
 import { WebPlugin } from '@capacitor/core';
-import type { BackgroundModePlugin, ISettings, PermissionStatus } from './definitions';
+import type { BackgroundModePlugin, ISettings, MicrophonePermissionStatus, NotificationPermissionStatus } from './definitions';
 export declare class BackgroundModeWeb extends WebPlugin implements BackgroundModePlugin {
     enable(): Promise<void>;
     disable(): Promise<void>;
@@ -7,10 +7,10 @@ export declare class BackgroundModeWeb extends WebPlugin implements BackgroundMo
         settings: ISettings;
     }>;
     setSettings(_settings: Partial<ISettings>): Promise<void>;
-    checkNotificationsPermission(): Promise<PermissionStatus>;
-    requestNotificationsPermission(): Promise<PermissionStatus>;
-    checkMicrophonePermission(): Promise<PermissionStatus>;
-    requestMicrophonePermission(): Promise<PermissionStatus>;
+    checkNotificationsPermission(): Promise<NotificationPermissionStatus>;
+    requestNotificationsPermission(): Promise<NotificationPermissionStatus>;
+    checkMicrophonePermission(): Promise<MicrophonePermissionStatus>;
+    requestMicrophonePermission(): Promise<MicrophonePermissionStatus>;
     checkBatteryOptimizations(): Promise<{
         enabled: boolean;
     }>;

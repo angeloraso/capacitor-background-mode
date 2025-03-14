@@ -1,7 +1,11 @@
 import type { PluginListenerHandle, PermissionState } from "@capacitor/core";
 
-export interface PermissionStatus {
-  display: PermissionState;
+export interface NotificationPermissionStatus {
+  notifications: PermissionState;
+}
+
+export interface MicrophonePermissionStatus {
+  microphone: PermissionState;
 }
 export interface ISettings {
   title: string;
@@ -27,10 +31,10 @@ export interface BackgroundModePlugin {
   disable(): Promise<void>;
   getSettings(): Promise<{settings: ISettings}>;
   setSettings(settings: Partial<ISettings>): Promise<void>;
-  checkNotificationsPermission(): Promise<PermissionStatus>;
-  requestNotificationsPermission(): Promise<PermissionStatus>;
-  checkMicrophonePermission(): Promise<PermissionStatus>;
-  requestMicrophonePermission(): Promise<PermissionStatus>;
+  checkNotificationsPermission(): Promise<NotificationPermissionStatus>;
+  requestNotificationsPermission(): Promise<NotificationPermissionStatus>;
+  checkMicrophonePermission(): Promise<MicrophonePermissionStatus>;
+  requestMicrophonePermission(): Promise<MicrophonePermissionStatus>;
   checkBatteryOptimizations(): Promise<{enabled: boolean}>;
   requestDisableBatteryOptimizations(): Promise<{enabled: boolean}>;
   enableWebViewOptimizations(): Promise<void>;
