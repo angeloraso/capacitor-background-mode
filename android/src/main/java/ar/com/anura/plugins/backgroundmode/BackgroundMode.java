@@ -19,7 +19,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 
@@ -159,7 +158,7 @@ public class BackgroundMode {
     }
 
     private void startService() {
-        if (mIsDisabled || mShouldUnbind) {
+        if (mIsDisabled || mShouldUnbind || !isMicrophoneEnabled() || !areNotificationsEnabled()) {
             return;
         }
 
