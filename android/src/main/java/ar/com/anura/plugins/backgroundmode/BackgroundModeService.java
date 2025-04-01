@@ -29,6 +29,7 @@ import androidx.core.app.NotificationCompat;
  */
 public class BackgroundModeService extends Service {
     private final String TAG = "BackgroundModeService";
+    private static boolean isRunning = false;
 
     // Fixed ID for the 'foreground' notification
     public static final int NOTIFICATION_ID = -574543954;
@@ -69,6 +70,7 @@ public class BackgroundModeService extends Service {
         super.onCreate();
         mSettings = new BackgroundModeSettings();
         keepAwake();
+        isRunning = true;
     }
 
     /**
@@ -79,6 +81,7 @@ public class BackgroundModeService extends Service {
         super.onDestroy();
         mSettings = null;
         sleepWell();
+        isRunning = false;
     }
 
     /**
@@ -332,5 +335,9 @@ public class BackgroundModeService extends Service {
      */
     private NotificationManager getNotificationManager() {
         return (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+    }
+
+    public static boolean isServiceRunning() {
+        return isRunning;
     }
 }
