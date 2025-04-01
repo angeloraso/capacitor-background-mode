@@ -152,7 +152,7 @@ public class BackgroundMode {
     }
 
     private void startService() {
-        if (isEnabled() || !isIgnoringBatteryOptimizations() || !isMicrophoneEnabled() || !areNotificationsEnabled()) {
+        if (BackgroundModeService.isServiceRunning() || !isIgnoringBatteryOptimizations() || !isMicrophoneEnabled() || !areNotificationsEnabled()) {
             return;
         }
 
