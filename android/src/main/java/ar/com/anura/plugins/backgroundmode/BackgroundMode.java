@@ -184,6 +184,10 @@ public class BackgroundMode {
     }
 
     public boolean isIgnoringBatteryOptimizations() {
+        if (mActivity == null) {
+            return false;
+        }
+
         String pkgName = mActivity.getPackageName();
         PowerManager pm = (PowerManager) mActivity.getSystemService(POWER_SERVICE);
         return pm.isIgnoringBatteryOptimizations(pkgName);
