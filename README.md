@@ -293,7 +293,6 @@ removeAllListeners() => Promise<void>
 | **`subText`**                    | <code>string</code>                            |
 | **`bigText`**                    | <code>boolean</code>                           |
 | **`resume`**                     | <code>boolean</code>                           |
-| **`silent`**                     | <code>boolean</code>                           |
 | **`hidden`**                     | <code>boolean</code>                           |
 | **`color`**                      | <code>string</code>                            |
 | **`icon`**                       | <code>string</code>                            |

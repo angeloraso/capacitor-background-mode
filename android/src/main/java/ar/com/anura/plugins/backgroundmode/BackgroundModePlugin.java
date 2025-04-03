@@ -105,7 +105,6 @@ public class BackgroundModePlugin extends Plugin {
         res.put("subText", settings.getSubText());
         res.put("bigText", settings.getBigText());
         res.put("resume", settings.getResume());
-        res.put("silent", settings.getSilent());
         res.put("hidden", settings.getHidden());
         res.put("color", settings.getColor());
         res.put("icon", settings.getIcon());
@@ -271,11 +270,6 @@ public class BackgroundModePlugin extends Plugin {
         Boolean resume = call.getBoolean("resume");
         if (resume != null) {
             settings.setResume(resume);
-        }
-
-        Boolean silent = call.getBoolean("silent");
-        if (silent != null) {
-            settings.setSilent(silent);
         }
 
         Boolean hidden = call.getBoolean("hidden");

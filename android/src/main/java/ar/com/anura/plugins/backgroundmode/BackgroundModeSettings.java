@@ -7,7 +7,6 @@ public class BackgroundModeSettings {
     private String subText = "";
     private boolean bigText = false;
     private boolean resume = true;
-    private boolean silent = false;
     private boolean hidden = true;
     private String color = "157f1f";
     private String icon = "icon";
@@ -58,14 +57,6 @@ public class BackgroundModeSettings {
 
     public void setResume(boolean resume) {
         this.resume = resume;
-    }
-
-    public boolean getSilent() {
-        return silent;
-    }
-
-    public void setSilent(boolean silent) {
-        this.silent = silent;
     }
 
     public boolean getHidden() {

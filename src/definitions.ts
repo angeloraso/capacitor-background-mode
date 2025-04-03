@@ -13,7 +13,6 @@ export interface ISettings {
   subText: string;
   bigText: boolean;
   resume: boolean;
-  silent: boolean;
   hidden: boolean;
   color: string;
   icon: string;

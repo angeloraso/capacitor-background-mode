@@ -99,13 +99,10 @@ public class BackgroundModeService extends Service {
      */
     @SuppressLint("WakelockTimeout")
     private void keepAwake() {
-        boolean isSilent = mSettings.getSilent();
-        if (!isSilent) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                startForeground(NOTIFICATION_ID, createNotification(), FOREGROUND_SERVICE_TYPE_SPECIAL_USE | FOREGROUND_SERVICE_TYPE_MICROPHONE);
-            } else {
-                startForeground(NOTIFICATION_ID, createNotification());
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            startForeground(NOTIFICATION_ID, createNotification(), FOREGROUND_SERVICE_TYPE_SPECIAL_USE | FOREGROUND_SERVICE_TYPE_MICROPHONE);
+        } else {
+            startForeground(NOTIFICATION_ID, createNotification());
         }
 
         PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
@@ -245,12 +242,6 @@ public class BackgroundModeService extends Service {
      * @param settings The config settings
      */
     protected void updateNotification(BackgroundModeSettings settings) {
-        boolean isSilent = settings.getSilent();
-        if (isSilent) {
-            stopForeground(true);
-            return;
-        }
-
         Notification notification = null;
         notification = createNotification(settings);
         getNotificationManager().notify(NOTIFICATION_ID, notification);

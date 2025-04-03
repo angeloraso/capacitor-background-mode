@@ -317,13 +317,6 @@
           "type": "boolean"
         },
         {
-          "name": "silent",
-          "tags": [],
-          "docs": "",
-          "complexTypes": [],
-          "type": "boolean"
-        },
-        {
           "name": "hidden",
           "tags": [],
           "docs": "",
