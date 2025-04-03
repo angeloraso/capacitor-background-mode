@@ -99,15 +99,28 @@ public class BackgroundModeService extends Service {
      */
     @SuppressLint("WakelockTimeout")
     private void keepAwake() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            startForeground(NOTIFICATION_ID, createNotification(), FOREGROUND_SERVICE_TYPE_SPECIAL_USE | FOREGROUND_SERVICE_TYPE_MICROPHONE);
-        } else {
-            startForeground(NOTIFICATION_ID, createNotification());
-        }
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                if (checkSelfPermission(Manifest.permission.FOREGROUND_SERVICE_SPECIAL_USE) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+                    startForeground(NOTIFICATION_ID, createNotification(), FOREGROUND_SERVICE_TYPE_SPECIAL_USE | FOREGROUND_SERVICE_TYPE_MICROPHONE);
+                } else {
+                    Log.e(TAG, "Missing FOREGROUND_SERVICE_SPECIAL_USE or RECORD_AUDIO permission!");
+                    sleepWell();
+                }
+            } else {
+                startForeground(NOTIFICATION_ID, createNotification());
+            }
 
-        PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
-        mWakeLock = pm.newWakeLock(PARTIAL_WAKE_LOCK, TAG + ":wakelock");
-        mWakeLock.acquire();
+            PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
+            mWakeLock = pm.newWakeLock(PARTIAL_WAKE_LOCK, TAG + ":wakelock");
+            mWakeLock.acquire();
+        } catch (SecurityException e) {
+            Log.e(TAG, "SecurityException: " + e.getMessage(), e);
+            sleepWell();
+        } catch (Exception e) {
+            Log.e(TAG, "Unexpected error in startForeground: " + e.getMessage(), e);
+            sleepWell();
+        }
     }
 
     /**
