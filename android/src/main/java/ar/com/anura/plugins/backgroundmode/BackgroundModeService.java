@@ -4,6 +4,7 @@ import static android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE;
 import static android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE;
 import static android.os.PowerManager.PARTIAL_WAKE_LOCK;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -12,6 +13,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Binder;
 import android.os.Build;
@@ -29,6 +31,7 @@ import androidx.core.app.NotificationCompat;
  */
 public class BackgroundModeService extends Service {
     private final String TAG = "BackgroundModeService";
+    private static boolean isRunning = false;
 
     // Fixed ID for the 'foreground' notification
     public static final int NOTIFICATION_ID = -574543954;
@@ -69,6 +72,7 @@ public class BackgroundModeService extends Service {
         super.onCreate();
         mSettings = new BackgroundModeSettings();
         keepAwake();
+        isRunning = true;
     }
 
     /**
@@ -79,6 +83,7 @@ public class BackgroundModeService extends Service {
         super.onDestroy();
         mSettings = null;
         sleepWell();
+        isRunning = false;
     }
 
     /**
@@ -96,18 +101,28 @@ public class BackgroundModeService extends Service {
      */
     @SuppressLint("WakelockTimeout")
     private void keepAwake() {
-        boolean isSilent = mSettings.getSilent();
-        if (!isSilent) {
+        try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                startForeground(NOTIFICATION_ID, createNotification(), FOREGROUND_SERVICE_TYPE_SPECIAL_USE | FOREGROUND_SERVICE_TYPE_MICROPHONE);
+                if (checkSelfPermission(Manifest.permission.FOREGROUND_SERVICE_SPECIAL_USE) == PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+                    startForeground(NOTIFICATION_ID, createNotification(), FOREGROUND_SERVICE_TYPE_SPECIAL_USE | FOREGROUND_SERVICE_TYPE_MICROPHONE);
+                } else {
+                    Log.e(TAG, "Missing FOREGROUND_SERVICE_SPECIAL_USE or RECORD_AUDIO permission!");
+                    sleepWell();
+                }
             } else {
                 startForeground(NOTIFICATION_ID, createNotification());
             }
-        }
 
-        PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
-        mWakeLock = pm.newWakeLock(PARTIAL_WAKE_LOCK, TAG + ":wakelock");
-        mWakeLock.acquire();
+            PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
+            mWakeLock = pm.newWakeLock(PARTIAL_WAKE_LOCK, TAG + ":wakelock");
+            mWakeLock.acquire();
+        } catch (SecurityException e) {
+            Log.e(TAG, "SecurityException: " + e.getMessage(), e);
+            sleepWell();
+        } catch (Exception e) {
+            Log.e(TAG, "Unexpected error in startForeground: " + e.getMessage(), e);
+            sleepWell();
+        }
     }
 
     /**
@@ -242,12 +257,6 @@ public class BackgroundModeService extends Service {
      * @param settings The config settings
      */
     protected void updateNotification(BackgroundModeSettings settings) {
-        boolean isSilent = settings.getSilent();
-        if (isSilent) {
-            stopForeground(true);
-            return;
-        }
-
         Notification notification = null;
         notification = createNotification(settings);
         getNotificationManager().notify(NOTIFICATION_ID, notification);
@@ -332,5 +341,9 @@ public class BackgroundModeService extends Service {
      */
     private NotificationManager getNotificationManager() {
         return (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+    }
+
+    public static boolean isServiceRunning() {
+        return isRunning;
     }
 }

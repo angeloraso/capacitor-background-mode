@@ -38,7 +38,6 @@ public class BackgroundMode {
     private final View mWebView;
     private BackgroundModeSettings mSettings;
     private BackgroundModeService foregroundService;
-    private boolean mShouldUnbind = false;
     private PowerManager.WakeLock wakeLock;
 
     @Nullable
@@ -53,9 +52,6 @@ public class BackgroundMode {
 
     // Flag indicates if the app is in background or foreground
     private boolean mInBackground = false;
-
-    // Flag indicates if the plugin is enabled or disabled
-    private boolean mIsDisabled = true;
 
     private Callback disableBatteryOptimizationCallback;
     private final ActivityResultLauncher<Intent> activityResultLauncher;
@@ -87,7 +83,7 @@ public class BackgroundMode {
         assert backgroundModeEventListener != null;
         backgroundModeEventListener.onBackgroundModeEvent(EVENT_APP_IN_BACKGROUND);
 
-        if (!isEnabled() || !isIgnoringBatteryOptimizations()) {
+        if (!isEnabled()) {
             return;
         }
 
@@ -148,17 +144,15 @@ public class BackgroundMode {
     }
 
     public void enable() {
-        mIsDisabled = false;
         startService();
     }
 
     public void disable() {
         stopService();
-        mIsDisabled = true;
     }
 
     private void startService() {
-        if (mIsDisabled || mShouldUnbind || !isMicrophoneEnabled() || !areNotificationsEnabled()) {
+        if (BackgroundModeService.isServiceRunning() || !isIgnoringBatteryOptimizations() || !isMicrophoneEnabled() || !areNotificationsEnabled()) {
             return;
         }
 
@@ -166,18 +160,16 @@ public class BackgroundMode {
 
         mContext.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         mContext.startForegroundService(intent);
-        mShouldUnbind = true;
     }
 
     private void stopService() {
-        if (!mShouldUnbind) {
+        if (!isEnabled()) {
             return;
         }
 
         Intent intent = new Intent(mContext, BackgroundModeService.class);
         mContext.unbindService(mConnection);
         mContext.stopService(intent);
-        mShouldUnbind = false;
     }
 
     public BackgroundModeSettings getSettings() {
@@ -186,7 +178,7 @@ public class BackgroundMode {
 
     public void setSettings(BackgroundModeSettings settings) {
         mSettings = settings;
-        if (mShouldUnbind && foregroundService != null) {
+        if (isEnabled() && foregroundService != null) {
             foregroundService.updateNotification(settings);
         }
     }
@@ -259,11 +251,7 @@ public class BackgroundMode {
     }
 
     public boolean isEnabled() {
-        return !mIsDisabled;
-    }
-
-    public boolean isActive() {
-        return mInBackground;
+        return BackgroundModeService.isServiceRunning() && isIgnoringBatteryOptimizations() && isMicrophoneEnabled() && areNotificationsEnabled();
     }
 
     private void clearScreenAndKeyguardFlags() {
