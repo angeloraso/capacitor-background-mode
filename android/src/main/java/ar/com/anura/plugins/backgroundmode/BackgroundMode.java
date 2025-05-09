@@ -52,6 +52,7 @@ public class BackgroundMode {
 
   // Flag indicates if the app is in background or foreground
   private boolean mInBackground = false;
+  // The app tried to start the service but there was some obstacle and it should try to start it the next time the app comes to the foreground
   private boolean mScheduleStartService = false;
 
   private Callback disableBatteryOptimizationCallback;
