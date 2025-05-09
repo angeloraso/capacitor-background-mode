@@ -68,7 +68,6 @@ public class BackgroundModeService extends Service {
     public void onCreate() {
         super.onCreate();
         mSettings = new BackgroundModeSettings();
-        keepAwake();
     }
 
     /**
@@ -87,6 +86,7 @@ public class BackgroundModeService extends Service {
      */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        keepAwake();
         return START_NOT_STICKY;
     }
 
