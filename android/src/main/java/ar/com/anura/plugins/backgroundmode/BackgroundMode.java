@@ -53,6 +53,8 @@ public class BackgroundMode {
 
     // Flag indicates if the app is in background or foreground
     private boolean mInBackground = false;
+    // The app tried to start the service but there was some obstacle and it should try to start it the next time the app comes to the foreground
+    private boolean mScheduleStartService = false;
 
     // Flag indicates if the plugin is enabled or disabled
     private boolean mIsDisabled = true;
@@ -140,6 +142,12 @@ public class BackgroundMode {
         mInBackground = false;
         assert backgroundModeEventListener != null;
         backgroundModeEventListener.onBackgroundModeEvent(EVENT_APP_IN_FOREGROUND);
+
+        if (mScheduleStartService) {
+            startService();
+        }
+    }
+
     }
 
     public void onDestroy() {
@@ -158,6 +166,11 @@ public class BackgroundMode {
     }
 
     private void startService() {
+        if (mInBackground) {
+            mScheduleStartService = true;
+            return;
+        }
+
         if (mIsDisabled || mShouldUnbind || !isMicrophoneEnabled() || !areNotificationsEnabled()) {
             return;
         }
@@ -167,6 +180,7 @@ public class BackgroundMode {
         mContext.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         mContext.startForegroundService(intent);
         mShouldUnbind = true;
+        mScheduleStartService = false;
     }
 
     private void stopService() {
