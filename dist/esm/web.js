@@ -9,7 +9,12 @@ export class BackgroundModeWeb extends WebPlugin {
     async getSettings() {
         throw this.unimplemented('Not implemented on web.');
     }
+<<<<<<< HEAD
     async updateNotification() {
+=======
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    async setSettings(_settings) {
+>>>>>>> 0123837 (Start service only on foreground)
         throw this.unimplemented('Not implemented on web.');
     }
     async checkNotificationsPermission() {

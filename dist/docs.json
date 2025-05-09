@@ -7,6 +7,7 @@
     "methods": [
       {
         "name": "enable",
+<<<<<<< HEAD
         "signature": "(settings: Partial<ISettings>) => Promise<void>",
         "parameters": [
           {
@@ -22,6 +23,14 @@
           "Partial",
           "ISettings"
         ],
+=======
+        "signature": "() => Promise<void>",
+        "parameters": [],
+        "returns": "Promise<void>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [],
+>>>>>>> 0123837 (Start service only on foreground)
         "slug": "enable"
       },
       {
@@ -35,7 +44,23 @@
         "slug": "disable"
       },
       {
+<<<<<<< HEAD
         "name": "updateNotification",
+=======
+        "name": "getSettings",
+        "signature": "() => Promise<{ settings: ISettings; }>",
+        "parameters": [],
+        "returns": "Promise<{ settings: ISettings; }>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [
+          "ISettings"
+        ],
+        "slug": "getsettings"
+      },
+      {
+        "name": "setSettings",
+>>>>>>> 0123837 (Start service only on foreground)
         "signature": "(settings: Partial<ISettings>) => Promise<void>",
         "parameters": [
           {
@@ -51,7 +76,11 @@
           "Partial",
           "ISettings"
         ],
+<<<<<<< HEAD
         "slug": "updatenotification"
+=======
+        "slug": "setsettings"
+>>>>>>> 0123837 (Start service only on foreground)
       },
       {
         "name": "checkNotificationsPermission",

@@ -6,7 +6,11 @@ export declare class BackgroundModeWeb extends WebPlugin implements BackgroundMo
     getSettings(): Promise<{
         settings: ISettings;
     }>;
+<<<<<<< HEAD
     updateNotification(): Promise<void>;
+=======
+    setSettings(_settings: Partial<ISettings>): Promise<void>;
+>>>>>>> 0123837 (Start service only on foreground)
     checkNotificationsPermission(): Promise<NotificationPermissionStatus>;
     requestNotificationsPermission(): Promise<NotificationPermissionStatus>;
     checkMicrophonePermission(): Promise<MicrophonePermissionStatus>;
