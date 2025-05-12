@@ -15,10 +15,9 @@ npx cap sync
 
 <docgen-index>
 
-* [`enable()`](#enable)
+* [`enable(...)`](#enable)
 * [`disable()`](#disable)
-* [`getSettings()`](#getsettings)
-* [`setSettings(...)`](#setsettings)
+* [`updateNotification(...)`](#updatenotification)
 * [`checkNotificationsPermission()`](#checknotificationspermission)
 * [`requestNotificationsPermission()`](#requestnotificationspermission)
 * [`checkMicrophonePermission()`](#checkmicrophonepermission)
@@ -45,11 +44,15 @@ npx cap sync
 <docgen-api>
 <!--Update the source file JSDoc comments and rerun docgen to update the docs below-->
 
-### enable()
+### enable(...)
 
 ```typescript
-enable() => Promise<void>
+enable(settings: Partial<ISettings>) => Promise<void>
 ```
+
+| Param          | Type                                                                                  |
+| -------------- | ------------------------------------------------------------------------------------- |
+| **`settings`** | <code><a href="#partial">Partial</a>&lt;<a href="#isettings">ISettings</a>&gt;</code> |
 
 --------------------
 
@@ -63,21 +66,10 @@ disable() => Promise<void>
 --------------------
 
 
-### getSettings()
+### updateNotification(...)
 
 ```typescript
-getSettings() => Promise<{ settings: ISettings; }>
-```
-
-**Returns:** <code>Promise&lt;{ settings: <a href="#isettings">ISettings</a>; }&gt;</code>
-
---------------------
-
-
-### setSettings(...)
-
-```typescript
-setSettings(settings: Partial<ISettings>) => Promise<void>
+updateNotification(settings: Partial<ISettings>) => Promise<void>
 ```
 
 | Param          | Type                                                                                  |

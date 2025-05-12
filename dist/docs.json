@@ -7,38 +7,6 @@
     "methods": [
       {
         "name": "enable",
-        "signature": "() => Promise<void>",
-        "parameters": [],
-        "returns": "Promise<void>",
-        "tags": [],
-        "docs": "",
-        "complexTypes": [],
-        "slug": "enable"
-      },
-      {
-        "name": "disable",
-        "signature": "() => Promise<void>",
-        "parameters": [],
-        "returns": "Promise<void>",
-        "tags": [],
-        "docs": "",
-        "complexTypes": [],
-        "slug": "disable"
-      },
-      {
-        "name": "getSettings",
-        "signature": "() => Promise<{ settings: ISettings; }>",
-        "parameters": [],
-        "returns": "Promise<{ settings: ISettings; }>",
-        "tags": [],
-        "docs": "",
-        "complexTypes": [
-          "ISettings"
-        ],
-        "slug": "getsettings"
-      },
-      {
-        "name": "setSettings",
         "signature": "(settings: Partial<ISettings>) => Promise<void>",
         "parameters": [
           {
@@ -54,7 +22,36 @@
           "Partial",
           "ISettings"
         ],
-        "slug": "setsettings"
+        "slug": "enable"
+      },
+      {
+        "name": "disable",
+        "signature": "() => Promise<void>",
+        "parameters": [],
+        "returns": "Promise<void>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [],
+        "slug": "disable"
+      },
+      {
+        "name": "updateNotification",
+        "signature": "(settings: Partial<ISettings>) => Promise<void>",
+        "parameters": [
+          {
+            "name": "settings",
+            "docs": "",
+            "type": "Partial<ISettings>"
+          }
+        ],
+        "returns": "Promise<void>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [
+          "Partial",
+          "ISettings"
+        ],
+        "slug": "updatenotification"
       },
       {
         "name": "checkNotificationsPermission",

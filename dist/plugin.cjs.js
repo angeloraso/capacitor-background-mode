@@ -16,8 +16,7 @@ class BackgroundModeWeb extends core.WebPlugin {
     async getSettings() {
         throw this.unimplemented('Not implemented on web.');
     }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async setSettings(_settings) {
+    async updateNotification() {
         throw this.unimplemented('Not implemented on web.');
     }
     async checkNotificationsPermission() {

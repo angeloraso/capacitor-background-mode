@@ -6,7 +6,7 @@ export declare class BackgroundModeWeb extends WebPlugin implements BackgroundMo
     getSettings(): Promise<{
         settings: ISettings;
     }>;
-    setSettings(_settings: Partial<ISettings>): Promise<void>;
+    updateNotification(): Promise<void>;
     checkNotificationsPermission(): Promise<NotificationPermissionStatus>;
     requestNotificationsPermission(): Promise<NotificationPermissionStatus>;
     checkMicrophonePermission(): Promise<MicrophonePermissionStatus>;
