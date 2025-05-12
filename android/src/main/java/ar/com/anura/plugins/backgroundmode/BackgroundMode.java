@@ -36,7 +36,7 @@ public class BackgroundMode {
     private final Context mContext;
     private final AppCompatActivity mActivity;
     private final View mWebView;
-    private BackgroundModeSettings mSettings;
+    private BackgroundModeSettings mSettings = new BackgroundModeSettings.Builder().build();;
     private BackgroundModeService foregroundService;
     private boolean mShouldUnbind = false;
     private PowerManager.WakeLock wakeLock;
@@ -228,11 +228,11 @@ public class BackgroundMode {
     }
 
     public void enableWebViewOptimizations() {
-        mSettings.setDisableWebViewOptimization(false);
+        mSettings.setDisableWebViewOptimization(true);
     }
 
     public void disableWebViewOptimizations() {
-        mSettings.setDisableWebViewOptimization(true);
+        mSettings.setDisableWebViewOptimization(false);
         // Immediately dispatch visibility changed in case the app
         // has started in the background and is not visible
         mWebView.dispatchWindowVisibilityChanged(View.VISIBLE);

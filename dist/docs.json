@@ -8,6 +8,9 @@
       {
         "name": "enable",
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 3141302 (Fix notification updating)
         "signature": "(settings: Partial<ISettings>) => Promise<void>",
         "parameters": [
           {
@@ -23,6 +26,7 @@
           "Partial",
           "ISettings"
         ],
+<<<<<<< HEAD
 =======
         "signature": "() => Promise<void>",
         "parameters": [],
@@ -31,6 +35,8 @@
         "docs": "",
         "complexTypes": [],
 >>>>>>> 0123837 (Start service only on foreground)
+=======
+>>>>>>> 3141302 (Fix notification updating)
         "slug": "enable"
       },
       {
@@ -44,6 +50,7 @@
         "slug": "disable"
       },
       {
+<<<<<<< HEAD
 <<<<<<< HEAD
         "name": "updateNotification",
 =======
@@ -61,6 +68,9 @@
       {
         "name": "setSettings",
 >>>>>>> 0123837 (Start service only on foreground)
+=======
+        "name": "updateNotification",
+>>>>>>> 3141302 (Fix notification updating)
         "signature": "(settings: Partial<ISettings>) => Promise<void>",
         "parameters": [
           {
@@ -77,10 +87,14 @@
           "ISettings"
         ],
 <<<<<<< HEAD
+<<<<<<< HEAD
         "slug": "updatenotification"
 =======
         "slug": "setsettings"
 >>>>>>> 0123837 (Start service only on foreground)
+=======
+        "slug": "updatenotification"
+>>>>>>> 3141302 (Fix notification updating)
       },
       {
         "name": "checkNotificationsPermission",
