@@ -37,7 +37,6 @@ public class BackgroundModeService extends Service {
 
     // Partial wake lock to prevent the app from going to sleep when locked
     private PowerManager.WakeLock mWakeLock;
-    private BackgroundModeSettings mSettings;
 
     public BackgroundModeService() {}
 
@@ -56,10 +55,6 @@ public class BackgroundModeService extends Service {
         }
     }
 
-    public void setSettings(BackgroundModeSettings settings) {
-        this.mSettings = settings;
-    }
-
     /**
      * Put the service in a foreground state to prevent app from being killed
      * by the OS.
@@ -67,7 +62,6 @@ public class BackgroundModeService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        mSettings = new BackgroundModeSettings();
     }
 
     /**
@@ -76,7 +70,6 @@ public class BackgroundModeService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mSettings = null;
         sleepWell();
     }
 
@@ -86,7 +79,14 @@ public class BackgroundModeService extends Service {
      */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        keepAwake();
+        BackgroundModeSettings settings = (BackgroundModeSettings) intent.getSerializableExtra("settings");
+
+        if (settings == null) {
+            settings = new BackgroundModeSettings.Builder().build();
+        }
+
+        keepAwake(settings);
+
         return START_NOT_STICKY;
     }
 
@@ -95,13 +95,13 @@ public class BackgroundModeService extends Service {
      * by the OS.
      */
     @SuppressLint("WakelockTimeout")
-    private void keepAwake() {
-        boolean isSilent = mSettings.getSilent();
+    private void keepAwake(final BackgroundModeSettings settings) {
+        boolean isSilent = settings.getSilent();
         if (!isSilent) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                startForeground(NOTIFICATION_ID, createNotification(), FOREGROUND_SERVICE_TYPE_SPECIAL_USE | FOREGROUND_SERVICE_TYPE_MICROPHONE);
+                startForeground(NOTIFICATION_ID, createNotification(settings), FOREGROUND_SERVICE_TYPE_SPECIAL_USE | FOREGROUND_SERVICE_TYPE_MICROPHONE);
             } else {
-                startForeground(NOTIFICATION_ID, createNotification());
+                startForeground(NOTIFICATION_ID, createNotification(settings));
             }
         }
 
@@ -121,14 +121,6 @@ public class BackgroundModeService extends Service {
             mWakeLock.release();
             mWakeLock = null;
         }
-    }
-
-    /**
-     * Create a notification as the visible part to be able to put the service
-     * in a foreground state by using the default settings.
-     */
-    private Notification createNotification() {
-        return createNotification(mSettings);
     }
 
     /**
@@ -242,15 +234,7 @@ public class BackgroundModeService extends Service {
      * @param settings The config settings
      */
     protected void updateNotification(BackgroundModeSettings settings) {
-        boolean isSilent = settings.getSilent();
-        if (isSilent) {
-            stopForeground(true);
-            return;
-        }
-
-        Notification notification = null;
-        notification = createNotification(settings);
-        getNotificationManager().notify(NOTIFICATION_ID, notification);
+        getNotificationManager().notify(NOTIFICATION_ID, createNotification(settings));
     }
 
     /**

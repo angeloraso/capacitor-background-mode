@@ -25,12 +25,9 @@ export interface ISettings {
     visibility: 'public' | 'private' | 'secret';
 }
 export interface BackgroundModePlugin {
-    enable(): Promise<void>;
+    enable(settings: Partial<ISettings>): Promise<void>;
     disable(): Promise<void>;
-    getSettings(): Promise<{
-        settings: ISettings;
-    }>;
-    setSettings(settings: Partial<ISettings>): Promise<void>;
+    updateNotification(settings: Partial<ISettings>): Promise<void>;
     checkNotificationsPermission(): Promise<NotificationPermissionStatus>;
     requestNotificationsPermission(): Promise<NotificationPermissionStatus>;
     checkMicrophonePermission(): Promise<MicrophonePermissionStatus>;

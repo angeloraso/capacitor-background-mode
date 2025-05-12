@@ -36,7 +36,7 @@ public class BackgroundMode {
     private final Context mContext;
     private final AppCompatActivity mActivity;
     private final View mWebView;
-    private BackgroundModeSettings mSettings;
+    private BackgroundModeSettings mSettings = new BackgroundModeSettings.Builder().build();;
     private BackgroundModeService foregroundService;
     private boolean mShouldUnbind = false;
     private PowerManager.WakeLock wakeLock;
@@ -66,7 +66,6 @@ public class BackgroundMode {
         mActivity = activity;
         mContext = context;
         mWebView = webView;
-        mSettings = new BackgroundModeSettings();
 
         activityResultLauncher = activity.registerForActivityResult(
         new ActivityResultContracts.StartActivityForResult(),
@@ -76,7 +75,6 @@ public class BackgroundMode {
     private final ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder iBinder) {
             foregroundService = ((BackgroundModeService.LocalBinder) iBinder).getService();
-            foregroundService.updateNotification(mSettings);
         }
 
         public void onServiceDisconnected(ComponentName className) {
@@ -144,7 +142,7 @@ public class BackgroundMode {
         backgroundModeEventListener.onBackgroundModeEvent(EVENT_APP_IN_FOREGROUND);
 
         if (mScheduleStartService) {
-            startService();
+            startService(mSettings);
         }
     }
 
@@ -153,9 +151,10 @@ public class BackgroundMode {
         android.os.Process.killProcess(android.os.Process.myPid());
     }
 
-    public void enable() {
+    public void enable(final BackgroundModeSettings settings) {
         mIsDisabled = false;
-        startService();
+        mSettings = mSettings.merge(settings);
+        startService(mSettings);
     }
 
     public void disable() {
@@ -163,7 +162,11 @@ public class BackgroundMode {
         mIsDisabled = true;
     }
 
-    private void startService() {
+    private void startService(final BackgroundModeSettings settings) {
+        if (settings == null) {
+            return;
+        }
+
         if (mInBackground) {
             mScheduleStartService = true;
             return;
@@ -174,6 +177,7 @@ public class BackgroundMode {
         }
 
         Intent intent = new Intent(mContext, BackgroundModeService.class);
+        intent.putExtra("settings", settings);
 
         mContext.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         mContext.startForegroundService(intent);
@@ -190,16 +194,13 @@ public class BackgroundMode {
         mContext.unbindService(mConnection);
         mContext.stopService(intent);
         mShouldUnbind = false;
+        mSettings = null;
     }
 
-    public BackgroundModeSettings getSettings() {
-        return mSettings;
-    }
-
-    public void setSettings(BackgroundModeSettings settings) {
-        mSettings = settings;
+    public void updateNotification(BackgroundModeSettings settings) {
+        mSettings = mSettings.merge(settings);
         if (mShouldUnbind && foregroundService != null) {
-            foregroundService.updateNotification(settings);
+            foregroundService.updateNotification(mSettings);
         }
     }
 
@@ -225,11 +226,11 @@ public class BackgroundMode {
     }
 
     public void enableWebViewOptimizations() {
-        mSettings.setDisableWebViewOptimization(false);
+        mSettings.setDisableWebViewOptimization(true);
     }
 
     public void disableWebViewOptimizations() {
-        mSettings.setDisableWebViewOptimization(true);
+        mSettings.setDisableWebViewOptimization(false);
         // Immediately dispatch visibility changed in case the app
         // has started in the background and is not visible
         mWebView.dispatchWindowVisibilityChanged(View.VISIBLE);

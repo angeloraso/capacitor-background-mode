@@ -14,8 +14,7 @@ export class BackgroundModeWeb
     async getSettings(): Promise<{settings: ISettings}>{
       throw this.unimplemented('Not implemented on web.');
     }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async setSettings(_settings: Partial<ISettings>): Promise<void>{
+    async updateNotification(): Promise<void>{
       throw this.unimplemented('Not implemented on web.');
     }
     async checkNotificationsPermission(): Promise<NotificationPermissionStatus> {
