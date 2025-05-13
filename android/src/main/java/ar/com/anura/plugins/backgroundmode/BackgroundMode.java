@@ -36,7 +36,7 @@ public class BackgroundMode {
     private final Context mContext;
     private final AppCompatActivity mActivity;
     private final View mWebView;
-    private BackgroundModeSettings mSettings = new BackgroundModeSettings.Builder().build();;
+    private BackgroundModeSettings mSettings;
     private BackgroundModeService foregroundService;
     private boolean mShouldUnbind = false;
     private PowerManager.WakeLock wakeLock;
@@ -66,6 +66,8 @@ public class BackgroundMode {
         mActivity = activity;
         mContext = context;
         mWebView = webView;
+
+        mSettings = new BackgroundModeSettings.Builder().build();
 
         activityResultLauncher = activity.registerForActivityResult(
         new ActivityResultContracts.StartActivityForResult(),
@@ -194,7 +196,7 @@ public class BackgroundMode {
         mContext.unbindService(mConnection);
         mContext.stopService(intent);
         mShouldUnbind = false;
-        mSettings = null;
+        mSettings = new BackgroundModeSettings.Builder().build();
     }
 
     public void updateNotification(BackgroundModeSettings settings) {
