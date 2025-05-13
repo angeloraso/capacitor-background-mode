@@ -228,11 +228,11 @@ public class BackgroundMode {
     }
 
     public void enableWebViewOptimizations() {
-        mSettings.setDisableWebViewOptimization(true);
+        mSettings.setDisableWebViewOptimization(false);
     }
 
     public void disableWebViewOptimizations() {
-        mSettings.setDisableWebViewOptimization(false);
+        mSettings.setDisableWebViewOptimization(true);
         // Immediately dispatch visibility changed in case the app
         // has started in the background and is not visible
         mWebView.dispatchWindowVisibilityChanged(View.VISIBLE);
