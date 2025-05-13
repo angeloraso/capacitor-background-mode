@@ -36,7 +36,7 @@ public class BackgroundMode {
     private final Context mContext;
     private final AppCompatActivity mActivity;
     private final View mWebView;
-    private BackgroundModeSettings mSettings = new BackgroundModeSettings.Builder().build();;
+    private BackgroundModeSettings mSettings;
     private BackgroundModeService foregroundService;
     private boolean mShouldUnbind = false;
     private PowerManager.WakeLock wakeLock;
