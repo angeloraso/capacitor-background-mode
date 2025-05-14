@@ -53,6 +53,8 @@ public class BackgroundMode {
 
     // Flag indicates if the app is in background or foreground
     private boolean mInBackground = false;
+    // The app tried to start the service but there was some obstacle and it should try to start it the next time the app comes to the foreground
+    private boolean mScheduleStartService = false;
 
     // Flag indicates if the plugin is enabled or disabled
     private boolean mIsDisabled = true;
@@ -64,7 +66,8 @@ public class BackgroundMode {
         mActivity = activity;
         mContext = context;
         mWebView = webView;
-        mSettings = new BackgroundModeSettings();
+
+        mSettings = new BackgroundModeSettings.Builder().build();
 
         activityResultLauncher = activity.registerForActivityResult(
         new ActivityResultContracts.StartActivityForResult(),
@@ -74,7 +77,6 @@ public class BackgroundMode {
     private final ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder iBinder) {
             foregroundService = ((BackgroundModeService.LocalBinder) iBinder).getService();
-            foregroundService.updateNotification(mSettings);
         }
 
         public void onServiceDisconnected(ComponentName className) {
@@ -140,6 +142,10 @@ public class BackgroundMode {
         mInBackground = false;
         assert backgroundModeEventListener != null;
         backgroundModeEventListener.onBackgroundModeEvent(EVENT_APP_IN_FOREGROUND);
+
+        if (mScheduleStartService) {
+            startService(mSettings);
+        }
     }
 
     public void onDestroy() {
@@ -147,9 +153,10 @@ public class BackgroundMode {
         android.os.Process.killProcess(android.os.Process.myPid());
     }
 
-    public void enable() {
+    public void enable(final BackgroundModeSettings settings) {
         mIsDisabled = false;
-        startService();
+        mSettings = mSettings.merge(settings);
+        startService(mSettings);
     }
 
     public void disable() {
@@ -157,16 +164,27 @@ public class BackgroundMode {
         mIsDisabled = true;
     }
 
-    private void startService() {
+    private void startService(final BackgroundModeSettings settings) {
+        if (settings == null) {
+            return;
+        }
+
+        if (mInBackground) {
+            mScheduleStartService = true;
+            return;
+        }
+
         if (mIsDisabled || mShouldUnbind || !isMicrophoneEnabled() || !areNotificationsEnabled()) {
             return;
         }
 
         Intent intent = new Intent(mContext, BackgroundModeService.class);
+        intent.putExtra("settings", settings);
 
         mContext.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         mContext.startForegroundService(intent);
         mShouldUnbind = true;
+        mScheduleStartService = false;
     }
 
     private void stopService() {
@@ -178,16 +196,13 @@ public class BackgroundMode {
         mContext.unbindService(mConnection);
         mContext.stopService(intent);
         mShouldUnbind = false;
+        mSettings = new BackgroundModeSettings.Builder().build();
     }
 
-    public BackgroundModeSettings getSettings() {
-        return mSettings;
-    }
-
-    public void setSettings(BackgroundModeSettings settings) {
-        mSettings = settings;
+    public void updateNotification(BackgroundModeSettings settings) {
+        mSettings = mSettings.merge(settings);
         if (mShouldUnbind && foregroundService != null) {
-            foregroundService.updateNotification(settings);
+            foregroundService.updateNotification(mSettings);
         }
     }
 

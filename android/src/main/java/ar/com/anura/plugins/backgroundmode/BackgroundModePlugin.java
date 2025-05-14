@@ -55,7 +55,9 @@ public class BackgroundModePlugin extends Plugin {
             return;
         }
 
-        backgroundMode.enable();
+        BackgroundModeSettings settings = getBackgroundModeSettings(call);
+
+        backgroundMode.enable(settings);
 
         call.resolve();
     }
@@ -96,35 +98,57 @@ public class BackgroundModePlugin extends Plugin {
         call.resolve();
     }
 
-    @PluginMethod
-    public void getSettings(PluginCall call) {
-        BackgroundModeSettings settings = backgroundMode.getSettings();
-        JSObject res = new JSObject();
-        res.put("title", settings.getTitle());
-        res.put("text", settings.getText());
-        res.put("subText", settings.getSubText());
-        res.put("bigText", settings.getBigText());
-        res.put("resume", settings.getResume());
-        res.put("silent", settings.getSilent());
-        res.put("hidden", settings.getHidden());
-        res.put("color", settings.getColor());
-        res.put("icon", settings.getIcon());
-        res.put("channelName", settings.getChannelName());
-        res.put("channelDescription", settings.getChannelDescription());
-        res.put("allowClose", settings.getAllowClose());
-        res.put("closeIcon", settings.getCloseIcon());
-        res.put("closeTitle", settings.getCloseTitle());
-        res.put("showWhen", settings.getShowWhen());
-        res.put("visibility", settings.getVisibility());
-        res.put("disableWebViewOptimization", settings.isDisableWebViewOptimization());
-        call.resolve(res);
+    private BackgroundModeSettings getBackgroundModeSettings(PluginCall call) {
+        String title = call.getString("title");
+        String text = call.getString("text");
+        String subText = call.getString("subText");
+        Boolean bigText = call.getBoolean("bigText");
+        Boolean resume = call.getBoolean("resume");
+        Boolean silent = call.getBoolean("silent");
+        Boolean hidden = call.getBoolean("hidden");
+        String color = call.getString("color");
+        String icon = call.getString("icon");
+        String channelName = call.getString("channelName");
+        String channelDescription = call.getString("channelDescription");
+        Boolean allowClose = call.getBoolean("allowClose");
+        String closeIcon = call.getString("closeIcon");
+        String closeTitle = call.getString("closeTitle");
+        Boolean showWhen = call.getBoolean("showWhen");
+        String visibility = call.getString("visibility");
+        Boolean disableWebViewOptimization = call.getBoolean("disableWebViewOptimization");
+
+        return new BackgroundModeSettings.Builder()
+          .title(title)
+          .text(text)
+          .subText(subText)
+          .bigText(bigText)
+          .resume(resume)
+          .silent(silent)
+          .hidden(hidden)
+          .color(color)
+          .icon(icon)
+          .channelName(channelName)
+          .channelDescription(channelDescription)
+          .allowClose(allowClose)
+          .closeIcon(closeIcon)
+          .closeTitle(closeTitle)
+          .showWhen(showWhen)
+          .visibility(Visibility.valueOfLabel(visibility))
+          .disableWebViewOptimization(disableWebViewOptimization)
+          .buildRaw();
     }
 
     @PluginMethod
-    public void setSettings(PluginCall call) {
-        BackgroundModeSettings currentSettings = backgroundMode.getSettings();
-        BackgroundModeSettings settings = buildSettings(currentSettings, call);
-        backgroundMode.setSettings(settings);
+    public void updateNotification(PluginCall call) {
+        if (getActivity().isFinishing()) {
+            String appFinishingMsg = getActivity().getString(R.string.app_finishing);
+            call.reject(appFinishingMsg);
+            return;
+        }
+
+        BackgroundModeSettings settings = getBackgroundModeSettings(call);
+
+        backgroundMode.updateNotification(settings);
         call.resolve();
     }
 
@@ -245,94 +269,5 @@ public class BackgroundModePlugin extends Plugin {
         } else {
             return "denied";
         }
-    }
-
-    private BackgroundModeSettings buildSettings(BackgroundModeSettings settings, PluginCall call) {
-        String title = call.getString("title");
-        if (title != null) {
-            settings.setTitle(title);
-        }
-
-        String text = call.getString("text");
-        if (text != null) {
-            settings.setText(text);
-        }
-
-        String subText = call.getString("subText");
-        if (subText != null) {
-            settings.setSubText(subText);
-        }
-
-        Boolean bigText = call.getBoolean("bigText");
-        if (bigText != null) {
-            settings.setBigText(bigText);
-        }
-
-        Boolean resume = call.getBoolean("resume");
-        if (resume != null) {
-            settings.setResume(resume);
-        }
-
-        Boolean silent = call.getBoolean("silent");
-        if (silent != null) {
-            settings.setSilent(silent);
-        }
-
-        Boolean hidden = call.getBoolean("hidden");
-        if (hidden != null) {
-            settings.setHidden(hidden);
-        }
-
-        String color = call.getString("color");
-        if (color != null) {
-            settings.setColor(color);
-        }
-
-        String icon = call.getString("icon");
-        if (icon != null) {
-            settings.setIcon(icon);
-        }
-
-        String channelName = call.getString("channelName");
-        if (channelName != null) {
-            settings.setChannelName(channelName);
-        }
-
-        String channelDescription = call.getString("channelDescription");
-        if (channelDescription != null) {
-            settings.setChannelDescription(channelDescription);
-        }
-
-        Boolean allowClose = call.getBoolean("allowClose");
-        if (allowClose != null) {
-            settings.setAllowClose(allowClose);
-        }
-
-        String closeIcon = call.getString("closeIcon");
-        if (closeIcon != null) {
-            settings.setCloseIcon(closeIcon);
-        }
-
-        String closeTitle = call.getString("closeTitle");
-        if (closeTitle != null) {
-            settings.setCloseTitle(closeTitle);
-        }
-
-        Boolean showWhen = call.getBoolean("showWhen");
-        if (showWhen != null) {
-            settings.setShowWhen(showWhen);
-        }
-
-        String visibility = call.getString("visibility");
-        if (visibility != null) {
-            settings.setVisibility(visibility);
-        }
-
-        Boolean disableWebViewOptimization = call.getBoolean("disableWebViewOptimization");
-        if (disableWebViewOptimization != null) {
-            settings.setDisableWebViewOptimization(disableWebViewOptimization);
-        }
-
-        return settings;
     }
 }
