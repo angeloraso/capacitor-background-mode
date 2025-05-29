@@ -22,6 +22,7 @@ export interface ISettings {
     closeTitle: string;
     showWhen: boolean;
     disableWebViewOptimization: boolean;
+    microphoneMandatory: boolean;
     visibility: 'public' | 'private' | 'secret';
 }
 export interface BackgroundModePlugin {
