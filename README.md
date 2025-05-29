@@ -296,6 +296,7 @@ removeAllListeners() => Promise<void>
 | **`closeTitle`**                 | <code>string</code>                            |
 | **`showWhen`**                   | <code>boolean</code>                           |
 | **`disableWebViewOptimization`** | <code>boolean</code>                           |
+| **`microphoneMandatory`**        | <code>boolean</code>                           |
 | **`visibility`**                 | <code>'public' \| 'private' \| 'secret'</code> |
 
 

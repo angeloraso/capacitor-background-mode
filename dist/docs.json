@@ -391,6 +391,13 @@
           "type": "boolean"
         },
         {
+          "name": "microphoneMandatory",
+          "tags": [],
+          "docs": "",
+          "complexTypes": [],
+          "type": "boolean"
+        },
+        {
           "name": "visibility",
           "tags": [],
           "docs": "",
