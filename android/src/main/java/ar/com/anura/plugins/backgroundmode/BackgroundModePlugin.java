@@ -116,6 +116,7 @@ public class BackgroundModePlugin extends Plugin {
         Boolean showWhen = call.getBoolean("showWhen");
         String visibility = call.getString("visibility");
         Boolean disableWebViewOptimization = call.getBoolean("disableWebViewOptimization");
+        Boolean microphoneMandatory = call.getBoolean("microphoneMandatory");
 
         return new BackgroundModeSettings.Builder()
           .title(title)
@@ -135,6 +136,7 @@ public class BackgroundModePlugin extends Plugin {
           .showWhen(showWhen)
           .visibility(Visibility.valueOfLabel(visibility))
           .disableWebViewOptimization(disableWebViewOptimization)
+          .microphoneMandatory(microphoneMandatory)
           .buildRaw();
     }
 

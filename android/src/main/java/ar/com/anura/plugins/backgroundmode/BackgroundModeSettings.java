@@ -20,7 +20,7 @@ public class BackgroundModeSettings implements Serializable {
   public static final Boolean DEFAULT_SHOW_WHEN = true;
   public static final Visibility DEFAULT_VISIBILITY = Visibility.PUBLIC;
   public static final Boolean DEFAULT_DISABLE_WEB_VIEW_OPTIMIZATION = true;
-  public static final Boolean DEFAULT_MICROPHONE_MANDATORY = true;
+  public static final Boolean DEFAULT_MICROPHONE_MANDATORY = false;
 
   private String title;
   private String text;
