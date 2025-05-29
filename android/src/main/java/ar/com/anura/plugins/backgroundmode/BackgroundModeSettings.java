@@ -20,6 +20,7 @@ public class BackgroundModeSettings implements Serializable {
   public static final Boolean DEFAULT_SHOW_WHEN = true;
   public static final Visibility DEFAULT_VISIBILITY = Visibility.PUBLIC;
   public static final Boolean DEFAULT_DISABLE_WEB_VIEW_OPTIMIZATION = true;
+  public static final Boolean DEFAULT_MICROPHONE_MANDATORY = true;
 
   private String title;
   private String text;
@@ -38,6 +39,7 @@ public class BackgroundModeSettings implements Serializable {
   private Boolean showWhen;
   private Visibility visibility;
   private Boolean disableWebViewOptimization;
+  private Boolean microphoneMandatory;
 
   private BackgroundModeSettings(Builder builder, boolean applyDefaults) {
     if (applyDefaults) {
@@ -58,6 +60,7 @@ public class BackgroundModeSettings implements Serializable {
       this.showWhen = builder.showWhen != null ? builder.showWhen : DEFAULT_SHOW_WHEN;
       this.visibility = builder.visibility != null ? builder.visibility : DEFAULT_VISIBILITY;
       this.disableWebViewOptimization = builder.disableWebViewOptimization != null ? builder.disableWebViewOptimization : DEFAULT_DISABLE_WEB_VIEW_OPTIMIZATION;
+      this.microphoneMandatory = builder.microphoneMandatory != null ? builder.microphoneMandatory : DEFAULT_MICROPHONE_MANDATORY;
     } else {
       this.title = builder.title;
       this.text = builder.text;
@@ -76,6 +79,7 @@ public class BackgroundModeSettings implements Serializable {
       this.showWhen = builder.showWhen;
       this.visibility = builder.visibility;
       this.disableWebViewOptimization = builder.disableWebViewOptimization;
+      this.microphoneMandatory = builder.microphoneMandatory;
     }
   }
 
@@ -98,6 +102,7 @@ public class BackgroundModeSettings implements Serializable {
     private Boolean showWhen;
     private Visibility visibility;
     private Boolean disableWebViewOptimization;
+    private Boolean microphoneMandatory;
 
     public Builder title(String title) { this.title = title; return this; }
     public Builder text(String text) { this.text = text; return this; }
@@ -116,6 +121,7 @@ public class BackgroundModeSettings implements Serializable {
     public Builder showWhen(Boolean showWhen) { this.showWhen = showWhen; return this; }
     public Builder visibility(Visibility visibility) { this.visibility = visibility; return this; }
     public Builder disableWebViewOptimization(Boolean disableWebViewOptimization) { this.disableWebViewOptimization = disableWebViewOptimization; return this; }
+    public Builder microphoneMandatory(Boolean microphoneMandatory) { this.microphoneMandatory = microphoneMandatory; return this; }
 
     public BackgroundModeSettings build() {
       return new BackgroundModeSettings(this, true);
@@ -190,8 +196,12 @@ public class BackgroundModeSettings implements Serializable {
     return visibility;
   }
 
-  public boolean isDisableWebViewOptimization() {
+  public Boolean isDisableWebViewOptimization() {
     return disableWebViewOptimization;
+  }
+
+  public Boolean isMicrophoneMandatory() {
+    return microphoneMandatory;
   }
 
   public void setTitle(String title) {
@@ -258,8 +268,12 @@ public class BackgroundModeSettings implements Serializable {
     this.visibility = visibility;
   }
 
-  public void setDisableWebViewOptimization(boolean disableWebViewOptimization) {
+  public void setDisableWebViewOptimization(Boolean disableWebViewOptimization) {
     this.disableWebViewOptimization = disableWebViewOptimization;
+  }
+
+  public void setMicrophoneMandatory(Boolean microphoneMandatory) {
+    this.microphoneMandatory = microphoneMandatory;
   }
 
   public BackgroundModeSettings merge(BackgroundModeSettings override) {
@@ -281,6 +295,7 @@ public class BackgroundModeSettings implements Serializable {
       .showWhen(override.showWhen != null ? override.showWhen : this.showWhen)
       .visibility(override.visibility != null ? override.visibility : this.visibility)
       .disableWebViewOptimization(override.disableWebViewOptimization != null ? override.disableWebViewOptimization : this.disableWebViewOptimization)
+      .microphoneMandatory(override.microphoneMandatory != null ? override.microphoneMandatory : this.microphoneMandatory)
       .build();
   }
 }

@@ -174,7 +174,7 @@ public class BackgroundMode {
             return;
         }
 
-        if (mIsDisabled || mShouldUnbind || !isMicrophoneEnabled() || !areNotificationsEnabled()) {
+        if (mIsDisabled || mShouldUnbind || (settings.isMicrophoneMandatory() && !isMicrophoneEnabled()) || !areNotificationsEnabled()) {
             return;
         }
 
