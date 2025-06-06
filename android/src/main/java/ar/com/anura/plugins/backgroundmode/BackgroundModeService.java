@@ -82,7 +82,7 @@ public class BackgroundModeService extends Service {
         BackgroundModeSettings settings = (BackgroundModeSettings) intent.getSerializableExtra("settings");
 
         if (settings == null) {
-            settings = new BackgroundModeSettings.Builder().build();
+            settings = new BackgroundModeSettings.Builder().buildWithDefaults();
         }
 
         keepAwake(settings);

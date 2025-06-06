@@ -135,7 +135,7 @@ public class BackgroundModePlugin extends Plugin {
           .showWhen(showWhen)
           .visibility(Visibility.valueOfLabel(visibility))
           .disableWebViewOptimization(disableWebViewOptimization)
-          .buildRaw();
+          .build();
     }
 
     @PluginMethod

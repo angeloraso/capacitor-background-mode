@@ -39,44 +39,44 @@ public class BackgroundModeSettings implements Serializable {
   private Visibility visibility;
   private boolean disableWebViewOptimization;
 
+  private BackgroundModeSettings(Builder builder) {
+    this.title = builder.title;
+    this.text = builder.text;
+    this.subText = builder.subText;
+    this.bigText = builder.bigText;
+    this.resume = builder.resume;
+    this.silent = builder.silent;
+    this.hidden = builder.hidden;
+    this.color = builder.color;
+    this.icon = builder.icon;
+    this.channelName = builder.channelName;
+    this.channelDescription = builder.channelDescription;
+    this.allowClose = builder.allowClose;
+    this.closeIcon = builder.closeIcon;
+    this.closeTitle = builder.closeTitle;
+    this.showWhen = builder.showWhen;
+    this.visibility = builder.visibility;
+    this.disableWebViewOptimization = builder.disableWebViewOptimization != null && builder.disableWebViewOptimization;
+  }
+
   private BackgroundModeSettings(Builder builder, boolean applyDefaults) {
-    if (applyDefaults) {
-      this.title = builder.title != null ? builder.title : DEFAULT_TITLE;
-      this.text = builder.text != null ? builder.text : DEFAULT_TEXT;
-      this.subText = builder.subText != null ? builder.subText : DEFAULT_SUB_TEXT;
-      this.bigText = builder.bigText != null ? builder.bigText : DEFAULT_BIG_TEXT;
-      this.resume = builder.resume != null ? builder.resume : DEFAULT_RESUME;
-      this.silent = builder.silent != null ? builder.silent : DEFAULT_SILENT;
-      this.hidden = builder.hidden != null ? builder.hidden : DEFAULT_HIDDEN;
-      this.color = builder.color != null ? builder.color : DEFAULT_COLOR;
-      this.icon = builder.icon != null ? builder.icon : DEFAULT_ICON;
-      this.channelName = builder.channelName != null ? builder.channelName : DEFAULT_CHANNEL_NAME;
-      this.channelDescription = builder.channelDescription != null ? builder.channelDescription : DEFAULT_CHANNEL_DESCRIPTION;
-      this.allowClose = builder.allowClose != null ? builder.allowClose : DEFAULT_ALLOW_CLOSE;
-      this.closeIcon = builder.closeIcon != null ? builder.closeIcon : DEFAULT_CLOSE_ICON;
-      this.closeTitle = builder.closeTitle != null ? builder.closeTitle : DEFAULT_CLOSE_TITLE;
-      this.showWhen = builder.showWhen != null ? builder.showWhen : DEFAULT_SHOW_WHEN;
-      this.visibility = builder.visibility != null ? builder.visibility : DEFAULT_VISIBILITY;
-      this.disableWebViewOptimization = builder.disableWebViewOptimization != null ? builder.disableWebViewOptimization : DEFAULT_DISABLE_WEB_VIEW_OPTIMIZATION;
-    } else {
-      this.title = builder.title;
-      this.text = builder.text;
-      this.subText = builder.subText;
-      this.bigText = builder.bigText;
-      this.resume = builder.resume;
-      this.silent = builder.silent;
-      this.hidden = builder.hidden;
-      this.color = builder.color;
-      this.icon = builder.icon;
-      this.channelName = builder.channelName;
-      this.channelDescription = builder.channelDescription;
-      this.allowClose = builder.allowClose;
-      this.closeIcon = builder.closeIcon;
-      this.closeTitle = builder.closeTitle;
-      this.showWhen = builder.showWhen;
-      this.visibility = builder.visibility;
-      this.disableWebViewOptimization = builder.disableWebViewOptimization != null && builder.disableWebViewOptimization;
-    }
+    this.title = builder.title != null ? builder.title : DEFAULT_TITLE;
+    this.text = builder.text != null ? builder.text : DEFAULT_TEXT;
+    this.subText = builder.subText != null ? builder.subText : DEFAULT_SUB_TEXT;
+    this.bigText = builder.bigText != null ? builder.bigText : DEFAULT_BIG_TEXT;
+    this.resume = builder.resume != null ? builder.resume : DEFAULT_RESUME;
+    this.silent = builder.silent != null ? builder.silent : DEFAULT_SILENT;
+    this.hidden = builder.hidden != null ? builder.hidden : DEFAULT_HIDDEN;
+    this.color = builder.color != null ? builder.color : DEFAULT_COLOR;
+    this.icon = builder.icon != null ? builder.icon : DEFAULT_ICON;
+    this.channelName = builder.channelName != null ? builder.channelName : DEFAULT_CHANNEL_NAME;
+    this.channelDescription = builder.channelDescription != null ? builder.channelDescription : DEFAULT_CHANNEL_DESCRIPTION;
+    this.allowClose = builder.allowClose != null ? builder.allowClose : DEFAULT_ALLOW_CLOSE;
+    this.closeIcon = builder.closeIcon != null ? builder.closeIcon : DEFAULT_CLOSE_ICON;
+    this.closeTitle = builder.closeTitle != null ? builder.closeTitle : DEFAULT_CLOSE_TITLE;
+    this.showWhen = builder.showWhen != null ? builder.showWhen : DEFAULT_SHOW_WHEN;
+    this.visibility = builder.visibility != null ? builder.visibility : DEFAULT_VISIBILITY;
+    this.disableWebViewOptimization = builder.disableWebViewOptimization != null ? builder.disableWebViewOptimization : DEFAULT_DISABLE_WEB_VIEW_OPTIMIZATION;
   }
 
 
@@ -117,12 +117,12 @@ public class BackgroundModeSettings implements Serializable {
     public Builder visibility(Visibility visibility) { this.visibility = visibility; return this; }
     public Builder disableWebViewOptimization(Boolean disableWebViewOptimization) { this.disableWebViewOptimization = disableWebViewOptimization; return this; }
 
-    public BackgroundModeSettings build() {
+    public BackgroundModeSettings buildWithDefaults() {
       return new BackgroundModeSettings(this, true);
     }
 
-    public BackgroundModeSettings buildRaw() {
-      return new BackgroundModeSettings(this, false);
+    public BackgroundModeSettings build() {
+      return new BackgroundModeSettings(this);
     }
   }
 
@@ -280,7 +280,7 @@ public class BackgroundModeSettings implements Serializable {
       .closeTitle(override.closeTitle != null ? override.closeTitle : this.closeTitle)
       .showWhen(override.showWhen != null ? override.showWhen : this.showWhen)
       .visibility(override.visibility != null ? override.visibility : this.visibility)
-      .disableWebViewOptimization(override.disableWebViewOptimization) // always set (non-null)
+      .disableWebViewOptimization(override.disableWebViewOptimization)
       .build();
   }
 }
