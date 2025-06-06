@@ -67,7 +67,7 @@ public class BackgroundMode {
         mContext = context;
         mWebView = webView;
 
-        mSettings = new BackgroundModeSettings.Builder().build();
+        mSettings = new BackgroundModeSettings.Builder().buildWithDefaults();
 
         activityResultLauncher = activity.registerForActivityResult(
         new ActivityResultContracts.StartActivityForResult(),
@@ -196,7 +196,7 @@ public class BackgroundMode {
         mContext.unbindService(mConnection);
         mContext.stopService(intent);
         mShouldUnbind = false;
-        mSettings = new BackgroundModeSettings.Builder().build();
+        mSettings = new BackgroundModeSettings.Builder().buildWithDefaults();
     }
 
     public void updateNotification(BackgroundModeSettings settings) {
