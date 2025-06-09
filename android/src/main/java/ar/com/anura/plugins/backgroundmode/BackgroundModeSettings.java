@@ -37,7 +37,7 @@ public class BackgroundModeSettings implements Serializable {
   private String closeTitle;
   private Boolean showWhen;
   private Visibility visibility;
-  private boolean disableWebViewOptimization;
+  private Boolean disableWebViewOptimization;
 
   private BackgroundModeSettings(Builder builder, boolean applyDefaults) {
     if (applyDefaults) {
@@ -75,7 +75,7 @@ public class BackgroundModeSettings implements Serializable {
       this.closeTitle = builder.closeTitle;
       this.showWhen = builder.showWhen;
       this.visibility = builder.visibility;
-      this.disableWebViewOptimization = builder.disableWebViewOptimization != null && builder.disableWebViewOptimization;
+      this.disableWebViewOptimization = builder.disableWebViewOptimization;
     }
   }
 
@@ -280,7 +280,7 @@ public class BackgroundModeSettings implements Serializable {
       .closeTitle(override.closeTitle != null ? override.closeTitle : this.closeTitle)
       .showWhen(override.showWhen != null ? override.showWhen : this.showWhen)
       .visibility(override.visibility != null ? override.visibility : this.visibility)
-      .disableWebViewOptimization(override.disableWebViewOptimization) // always set (non-null)
+      .disableWebViewOptimization(override.disableWebViewOptimization != null ? override.disableWebViewOptimization : this.disableWebViewOptimization)
       .build();
   }
 }
