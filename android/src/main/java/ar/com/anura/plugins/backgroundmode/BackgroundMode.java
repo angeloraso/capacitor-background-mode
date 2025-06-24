@@ -163,7 +163,23 @@ public class BackgroundMode {
             return;
         }
 
-        if (BackgroundModeService.isServiceRunning() || !isIgnoringBatteryOptimizations() || !isMicrophoneEnabled() || !areNotificationsEnabled()) {
+        if (BackgroundModeService.isServiceRunning()) {
+            Log.d(TAG, "Service already running");
+            return;
+        }
+
+        if (!isIgnoringBatteryOptimizations()) {
+            Log.d(TAG, "Battery optimizations not ignored");
+            return;
+        }
+
+        if (!isMicrophoneEnabled()) {
+            Log.d(TAG, "Microphone not enabled");
+            return;
+        }
+
+        if (!areNotificationsEnabled()) {
+            Log.d(TAG, "Notifications not enabled");
             return;
         }
 
