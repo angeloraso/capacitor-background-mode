@@ -25,24 +25,9 @@ export interface ISettings {
     visibility: 'public' | 'private' | 'secret';
 }
 export interface BackgroundModePlugin {
-<<<<<<< HEAD
-<<<<<<< HEAD
     enable(settings: Partial<ISettings>): Promise<void>;
     disable(): Promise<void>;
     updateNotification(settings: Partial<ISettings>): Promise<void>;
-=======
-    enable(): Promise<void>;
-    disable(): Promise<void>;
-    getSettings(): Promise<{
-        settings: ISettings;
-    }>;
-    setSettings(settings: Partial<ISettings>): Promise<void>;
->>>>>>> 0123837 (Start service only on foreground)
-=======
-    enable(settings: Partial<ISettings>): Promise<void>;
-    disable(): Promise<void>;
-    updateNotification(settings: Partial<ISettings>): Promise<void>;
->>>>>>> 3141302 (Fix notification updating)
     checkNotificationsPermission(): Promise<NotificationPermissionStatus>;
     requestNotificationsPermission(): Promise<NotificationPermissionStatus>;
     checkMicrophonePermission(): Promise<MicrophonePermissionStatus>;
