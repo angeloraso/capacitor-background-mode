@@ -79,7 +79,6 @@ public class BackgroundModeSettings implements Serializable {
     }
   }
 
-
   public static class Builder {
     private String title;
     private String text;
@@ -117,11 +116,11 @@ public class BackgroundModeSettings implements Serializable {
     public Builder visibility(Visibility visibility) { this.visibility = visibility; return this; }
     public Builder disableWebViewOptimization(Boolean disableWebViewOptimization) { this.disableWebViewOptimization = disableWebViewOptimization; return this; }
 
-    public BackgroundModeSettings build() {
+    public BackgroundModeSettings buildWithDefaults() {
       return new BackgroundModeSettings(this, true);
     }
 
-    public BackgroundModeSettings buildRaw() {
+    public BackgroundModeSettings build() {
       return new BackgroundModeSettings(this, false);
     }
   }
