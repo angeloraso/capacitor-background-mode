@@ -99,7 +99,11 @@ public class BackgroundModeService extends Service {
         boolean isSilent = settings.getSilent();
         if (!isSilent) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                startForeground(NOTIFICATION_ID, createNotification(settings), FOREGROUND_SERVICE_TYPE_SPECIAL_USE | FOREGROUND_SERVICE_TYPE_MICROPHONE);
+                if (settings.isMicrophoneMandatory()) {
+                    startForeground(NOTIFICATION_ID, createNotification(settings), FOREGROUND_SERVICE_TYPE_SPECIAL_USE | FOREGROUND_SERVICE_TYPE_MICROPHONE);
+                } else {
+                    startForeground(NOTIFICATION_ID, createNotification(settings), FOREGROUND_SERVICE_TYPE_SPECIAL_USE);
+                }
             } else {
                 startForeground(NOTIFICATION_ID, createNotification(settings));
             }
