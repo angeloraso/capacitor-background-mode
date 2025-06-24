@@ -32,7 +32,7 @@ import androidx.core.app.NotificationCompat;
 public class BackgroundModeService extends Service {
     private final String TAG = "BackgroundModeService";
 
-    private static boolean isRunning = false;
+    private static volatile boolean isRunning = false;
 
     // Fixed ID for the 'foreground' notification
     public static final int NOTIFICATION_ID = -574543954;
