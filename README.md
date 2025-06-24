@@ -30,7 +30,6 @@ npx cap sync
 * [`moveToForeground()`](#movetoforeground)
 * [`isScreenOff()`](#isscreenoff)
 * [`isEnabled()`](#isenabled)
-* [`isActive()`](#isactive)
 * [`wakeUp()`](#wakeup)
 * [`unlock()`](#unlock)
 * [`addListener('appInBackground', ...)`](#addlistenerappinbackground-)
@@ -199,17 +198,6 @@ isEnabled() => Promise<{ enabled: boolean; }>
 ```
 
 **Returns:** <code>Promise&lt;{ enabled: boolean; }&gt;</code>
-
---------------------
-
-
-### isActive()
-
-```typescript
-isActive() => Promise<{ activated: boolean; }>
-```
-
-**Returns:** <code>Promise&lt;{ activated: boolean; }&gt;</code>
 
 --------------------
 

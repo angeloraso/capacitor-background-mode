@@ -48,9 +48,6 @@ export interface BackgroundModePlugin {
     isEnabled(): Promise<{
         enabled: boolean;
     }>;
-    isActive(): Promise<{
-        activated: boolean;
-    }>;
     wakeUp(): Promise<void>;
     unlock(): Promise<void>;
     addListener(eventName: 'appInBackground', listenerFunc: () => void): Promise<PluginListenerHandle>;

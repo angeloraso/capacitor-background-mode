@@ -42,7 +42,6 @@ export interface BackgroundModePlugin {
   moveToForeground(): Promise<void>;
   isScreenOff(): Promise<{isScreenOff: boolean}>;
   isEnabled(): Promise<{enabled: boolean}>;
-  isActive(): Promise<{activated: boolean}>;
   wakeUp(): Promise<void>;
   unlock(): Promise<void>;
 
