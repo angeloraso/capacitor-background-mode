@@ -182,16 +182,6 @@
         "slug": "isenabled"
       },
       {
-        "name": "isActive",
-        "signature": "() => Promise<{ activated: boolean; }>",
-        "parameters": [],
-        "returns": "Promise<{ activated: boolean; }>",
-        "tags": [],
-        "docs": "",
-        "complexTypes": [],
-        "slug": "isactive"
-      },
-      {
         "name": "wakeUp",
         "signature": "() => Promise<void>",
         "parameters": [],

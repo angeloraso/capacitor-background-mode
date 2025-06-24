@@ -38,7 +38,6 @@ public class BackgroundMode {
     private final View mWebView;
     private BackgroundModeSettings mSettings;
     private BackgroundModeService foregroundService;
-    private boolean mShouldUnbind = false;
     private PowerManager.WakeLock wakeLock;
 
     @Nullable
@@ -55,9 +54,6 @@ public class BackgroundMode {
     private boolean mInBackground = false;
     // The app tried to start the service but there was some obstacle and it should try to start it the next time the app comes to the foreground
     private boolean mScheduleStartService = false;
-
-    // Flag indicates if the plugin is enabled or disabled
-    private boolean mIsDisabled = true;
 
     private Callback disableBatteryOptimizationCallback;
     private final ActivityResultLauncher<Intent> activityResultLauncher;
@@ -89,7 +85,7 @@ public class BackgroundMode {
         assert backgroundModeEventListener != null;
         backgroundModeEventListener.onBackgroundModeEvent(EVENT_APP_IN_BACKGROUND);
 
-        if (!isEnabled() || !isIgnoringBatteryOptimizations()) {
+        if (!isEnabled()) {
             return;
         }
 
@@ -154,18 +150,36 @@ public class BackgroundMode {
     }
 
     public void enable(final BackgroundModeSettings settings) {
-        mIsDisabled = false;
         mSettings = mSettings.merge(settings);
         startService(mSettings);
     }
 
     public void disable() {
         stopService();
-        mIsDisabled = true;
     }
 
     private void startService(final BackgroundModeSettings settings) {
         if (settings == null) {
+            return;
+        }
+
+        if (BackgroundModeService.isServiceRunning()) {
+            Log.d(TAG, "Service already running");
+            return;
+        }
+
+        if (!isIgnoringBatteryOptimizations()) {
+            Log.d(TAG, "Battery optimizations not ignored");
+            return;
+        }
+
+        if (!isMicrophoneEnabled()) {
+            Log.d(TAG, "Microphone not enabled");
+            return;
+        }
+
+        if (!areNotificationsEnabled()) {
+            Log.d(TAG, "Notifications not enabled");
             return;
         }
 
@@ -174,34 +188,28 @@ public class BackgroundMode {
             return;
         }
 
-        if (mIsDisabled || mShouldUnbind || !isMicrophoneEnabled() || !areNotificationsEnabled()) {
-            return;
-        }
-
         Intent intent = new Intent(mContext, BackgroundModeService.class);
         intent.putExtra("settings", settings);
 
         mContext.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         mContext.startForegroundService(intent);
-        mShouldUnbind = true;
         mScheduleStartService = false;
     }
 
     private void stopService() {
-        if (!mShouldUnbind) {
+        if (!BackgroundModeService.isServiceRunning()) {
             return;
         }
 
         Intent intent = new Intent(mContext, BackgroundModeService.class);
         mContext.unbindService(mConnection);
         mContext.stopService(intent);
-        mShouldUnbind = false;
         mSettings = new BackgroundModeSettings.Builder().build();
     }
 
     public void updateNotification(BackgroundModeSettings settings) {
         mSettings = mSettings.merge(settings);
-        if (mShouldUnbind && foregroundService != null) {
+        if (isEnabled() && foregroundService != null) {
             foregroundService.updateNotification(mSettings);
         }
     }
@@ -274,11 +282,7 @@ public class BackgroundMode {
     }
 
     public boolean isEnabled() {
-        return !mIsDisabled;
-    }
-
-    public boolean isActive() {
-        return mInBackground;
+        return BackgroundModeService.isServiceRunning() && isIgnoringBatteryOptimizations() && isMicrophoneEnabled() && areNotificationsEnabled();
     }
 
     private void clearScreenAndKeyguardFlags() {
