@@ -62,6 +62,13 @@ public class BackgroundMode {
     private Callback disableBatteryOptimizationCallback;
     private final ActivityResultLauncher<Intent> activityResultLauncher;
 
+    /**
+     * Constructs a BackgroundMode instance, initializing background mode settings and registering an activity result launcher for battery optimization requests.
+     *
+     * @param activity the hosting AppCompatActivity
+     * @param context the Android context
+     * @param webView the WebView component to manage during background mode
+     */
     BackgroundMode(final AppCompatActivity activity, final Context context, final View webView) {
         mActivity = activity;
         mContext = context;
@@ -187,6 +194,9 @@ public class BackgroundMode {
         mScheduleStartService = false;
     }
 
+    /**
+     * Stops and unbinds the background mode foreground service, resetting settings to their default values.
+     */
     private void stopService() {
         if (!mShouldUnbind) {
             return;
@@ -199,6 +209,11 @@ public class BackgroundMode {
         mSettings = new BackgroundModeSettings.Builder().buildWithDefaults();
     }
 
+    /**
+     * Updates the background mode notification with new settings.
+     *
+     * Merges the provided settings with the current configuration and, if the background service is active, updates its notification accordingly.
+     */
     public void updateNotification(BackgroundModeSettings settings) {
         mSettings = mSettings.merge(settings);
         if (mShouldUnbind && foregroundService != null) {

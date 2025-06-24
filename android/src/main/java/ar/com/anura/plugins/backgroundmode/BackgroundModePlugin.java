@@ -98,6 +98,13 @@ public class BackgroundModePlugin extends Plugin {
         call.resolve();
     }
 
+    /**
+     * Constructs a BackgroundModeSettings object from parameters provided in the plugin call.
+     *
+     * Extracts notification and background mode configuration options from the call and builds a BackgroundModeSettings instance using the builder pattern.
+     *
+     * @return a BackgroundModeSettings object populated with values from the plugin call
+     */
     private BackgroundModeSettings getBackgroundModeSettings(PluginCall call) {
         String title = call.getString("title");
         String text = call.getString("text");
@@ -138,6 +145,11 @@ public class BackgroundModePlugin extends Plugin {
           .build();
     }
 
+    /**
+     * Updates the background mode notification with new settings provided in the plugin call.
+     *
+     * Rejects the call if the activity is finishing; otherwise, applies the updated notification settings and resolves the call.
+     */
     @PluginMethod
     public void updateNotification(PluginCall call) {
         if (getActivity().isFinishing()) {

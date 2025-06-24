@@ -74,8 +74,14 @@ public class BackgroundModeService extends Service {
     }
 
     /**
-     * START_NOT_STICKY: if the process (the App) is killed with no remaining start commands to deliver,
-     * then the service will be stopped instead of restarted
+     * Handles the start request for the service, configuring foreground mode and wake lock based on provided settings.
+     *
+     * Extracts background mode settings from the intent, applies default settings if none are provided, and ensures the service runs in the foreground with appropriate notification and wake lock. Returns {@code START_NOT_STICKY} to indicate the service should not be restarted automatically if killed.
+     *
+     * @param intent  the intent containing background mode settings
+     * @param flags   additional data about the start request
+     * @param startId a unique integer representing this specific request
+     * @return {@code START_NOT_STICKY} to prevent automatic restart of the service if terminated
      */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {

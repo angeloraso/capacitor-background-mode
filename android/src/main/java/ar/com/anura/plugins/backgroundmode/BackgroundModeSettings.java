@@ -39,6 +39,12 @@ public class BackgroundModeSettings implements Serializable {
   private Visibility visibility;
   private Boolean disableWebViewOptimization;
 
+  /**
+   * Constructs a BackgroundModeSettings instance from a Builder, optionally applying default values for unset fields.
+   *
+   * @param builder the Builder containing configuration values
+   * @param applyDefaults if true, assigns default values to fields not set in the builder; if false, uses builder values as-is
+   */
   private BackgroundModeSettings(Builder builder, boolean applyDefaults) {
     if (applyDefaults) {
       this.title = builder.title != null ? builder.title : DEFAULT_TITLE;
@@ -113,13 +119,35 @@ public class BackgroundModeSettings implements Serializable {
     public Builder closeIcon(String closeIcon) { this.closeIcon = closeIcon; return this; }
     public Builder closeTitle(String closeTitle) { this.closeTitle = closeTitle; return this; }
     public Builder showWhen(Boolean showWhen) { this.showWhen = showWhen; return this; }
-    public Builder visibility(Visibility visibility) { this.visibility = visibility; return this; }
-    public Builder disableWebViewOptimization(Boolean disableWebViewOptimization) { this.disableWebViewOptimization = disableWebViewOptimization; return this; }
+    /**
+ * Sets the notification visibility level.
+ *
+ * @param visibility the desired visibility setting for the notification
+ * @return this builder instance for method chaining
+ */
+public Builder visibility(Visibility visibility) { this.visibility = visibility; return this; }
+    /**
+ * Sets whether to disable WebView optimization for background mode.
+ *
+ * @param disableWebViewOptimization true to disable WebView optimization, false to enable it, or null to leave unset
+ * @return this builder instance for method chaining
+ */
+public Builder disableWebViewOptimization(Boolean disableWebViewOptimization) { this.disableWebViewOptimization = disableWebViewOptimization; return this; }
 
+    /**
+     * Builds a {@link BackgroundModeSettings} instance, applying default values for any fields not explicitly set in the builder.
+     *
+     * @return a new {@code BackgroundModeSettings} object with defaults applied where necessary
+     */
     public BackgroundModeSettings buildWithDefaults() {
       return new BackgroundModeSettings(this, true);
     }
 
+    /**
+     * Builds a {@link BackgroundModeSettings} instance using only the values explicitly set in the builder, without applying default values for unset fields.
+     *
+     * @return a {@code BackgroundModeSettings} object with the builder's current values
+     */
     public BackgroundModeSettings build() {
       return new BackgroundModeSettings(this, false);
     }
