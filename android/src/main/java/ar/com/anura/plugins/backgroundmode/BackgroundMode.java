@@ -181,7 +181,7 @@ public class BackgroundMode {
     }
 
     private void stopService() {
-        if (!isEnabled()) {
+        if (!BackgroundModeService.isServiceRunning()) {
             return;
         }
 
