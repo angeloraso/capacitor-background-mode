@@ -87,6 +87,16 @@ public class BackgroundModeService extends Service {
     }
 
     /**
+     * Stop background mode when the user removes the app task from Recents.
+     */
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        sleepWell();
+        stopSelf();
+        super.onTaskRemoved(rootIntent);
+    }
+
+    /**
      * Put the service in a foreground state to prevent app from being killed
      * by the OS.
      */
