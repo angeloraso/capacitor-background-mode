@@ -13,14 +13,13 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
+import java.lang.ref.WeakReference;
 
 /**
  * Puts the service in a foreground state, where the system considers it to be
@@ -28,12 +27,15 @@ import androidx.core.app.NotificationCompat;
  * when low on memory.
  */
 public class BackgroundModeService extends Service {
+
     private final String TAG = "BackgroundModeService";
 
     // Fixed ID for the 'foreground' notification
     public static final int NOTIFICATION_ID = -574543954;
 
-    private final IBinder mLocalBinder = new LocalBinder();
+    private static final String CHANNEL_ID = "anuradev-capacitor-background-mode-id-v3";
+    private static final String SILENT_CHANNEL_ID = CHANNEL_ID + "-silent";
+    private static volatile WeakReference<BackgroundModeService> runningService = new WeakReference<>(null);
 
     // Partial wake lock to prevent the app from going to sleep when locked
     private PowerManager.WakeLock mWakeLock;
@@ -45,14 +47,7 @@ public class BackgroundModeService extends Service {
      */
     @Override
     public IBinder onBind(Intent intent) {
-        return mLocalBinder;
-    }
-
-    class LocalBinder extends Binder {
-
-        BackgroundModeService getService() {
-            return BackgroundModeService.this;
-        }
+        return null;
     }
 
     /**
@@ -62,6 +57,7 @@ public class BackgroundModeService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        runningService = new WeakReference<>(this);
     }
 
     /**
@@ -69,17 +65,17 @@ public class BackgroundModeService extends Service {
      */
     @Override
     public void onDestroy() {
-        super.onDestroy();
         sleepWell();
+        runningService.clear();
+        super.onDestroy();
     }
 
     /**
-     * START_NOT_STICKY: if the process (the App) is killed with no remaining start commands to deliver,
-     * then the service will be stopped instead of restarted
+     * Redeliver the settings if Android has to recreate the service after killing its process.
      */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        BackgroundModeSettings settings = (BackgroundModeSettings) intent.getSerializableExtra("settings");
+        BackgroundModeSettings settings = intent == null ? null : (BackgroundModeSettings) intent.getSerializableExtra("settings");
 
         if (settings == null) {
             settings = new BackgroundModeSettings.Builder().build();
@@ -87,7 +83,7 @@ public class BackgroundModeService extends Service {
 
         keepAwake(settings);
 
-        return START_NOT_STICKY;
+        return START_REDELIVER_INTENT;
     }
 
     /**
@@ -96,18 +92,22 @@ public class BackgroundModeService extends Service {
      */
     @SuppressLint("WakelockTimeout")
     private void keepAwake(final BackgroundModeSettings settings) {
-        boolean isSilent = settings.getSilent();
-        if (!isSilent) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                startForeground(NOTIFICATION_ID, createNotification(settings), FOREGROUND_SERVICE_TYPE_SPECIAL_USE | FOREGROUND_SERVICE_TYPE_MICROPHONE);
-            } else {
-                startForeground(NOTIFICATION_ID, createNotification(settings));
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            startForeground(
+                NOTIFICATION_ID,
+                createNotification(settings),
+                FOREGROUND_SERVICE_TYPE_SPECIAL_USE | FOREGROUND_SERVICE_TYPE_MICROPHONE
+            );
+        } else {
+            startForeground(NOTIFICATION_ID, createNotification(settings));
         }
 
         PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
-        mWakeLock = pm.newWakeLock(PARTIAL_WAKE_LOCK, TAG + ":wakelock");
-        mWakeLock.acquire();
+        if (mWakeLock == null || !mWakeLock.isHeld()) {
+            mWakeLock = pm.newWakeLock(PARTIAL_WAKE_LOCK, TAG + ":wakelock");
+            mWakeLock.setReferenceCounted(false);
+            mWakeLock.acquire();
+        }
     }
 
     /**
@@ -117,10 +117,10 @@ public class BackgroundModeService extends Service {
         stopForeground(true);
         getNotificationManager().cancel(NOTIFICATION_ID);
 
-        if (mWakeLock != null) {
+        if (mWakeLock != null && mWakeLock.isHeld()) {
             mWakeLock.release();
-            mWakeLock = null;
         }
+        mWakeLock = null;
     }
 
     /**
@@ -132,9 +132,9 @@ public class BackgroundModeService extends Service {
     private Notification createNotification(BackgroundModeSettings settings) {
         // use channelId for Oreo and higher
         String OLD_CHANNEL_ID = "anuradev-capacitor-background-mode-id";
-        String CHANNEL_ID = "anuradev-capacitor-background-mode-id-v2";
+        String channelId = settings.getSilent() ? SILENT_CHANNEL_ID : CHANNEL_ID;
         // The user-visible name of the channel.
-        NotificationChannel mChannel = getNotificationChannel(settings, CHANNEL_ID);
+        NotificationChannel mChannel = getNotificationChannel(settings, channelId);
 
         NotificationManager notificationManager = getNotificationManager();
         notificationManager.deleteNotificationChannel(OLD_CHANNEL_ID);
@@ -152,16 +152,18 @@ public class BackgroundModeService extends Service {
 
         String iconName = settings.getIcon();
         int smallIcon = getIconResId(iconName);
-        if (smallIcon == 0) { // If no icon at all was found, fall back to the app's icon
+        if (smallIcon == 0) {
+            // If no icon at all was found, fall back to the app's icon
             smallIcon = context.getApplicationInfo().icon;
         }
 
-        NotificationCompat.Builder notification = new NotificationCompat.Builder(context, CHANNEL_ID)
+        NotificationCompat.Builder notification = new NotificationCompat.Builder(context, channelId)
             .setContentTitle(title)
             .setContentText(text)
             .setOngoing(true)
             .setSmallIcon(smallIcon)
-            .setShowWhen(showWhen);
+            .setShowWhen(showWhen)
+            .setSilent(settings.getSilent());
 
         if (!subText.isEmpty()) {
             notification.setSubText(subText);
@@ -169,7 +171,7 @@ public class BackgroundModeService extends Service {
 
         boolean allowClose = settings.getAllowClose();
         if (allowClose) {
-            final Intent closeAppIntent = new Intent("ar.com.anura.plugins.backgroundmode.close" + pkgName);
+            final Intent closeAppIntent = new Intent(context, BackgroundModeCloseReceiver.class);
             final PendingIntent closeIntent = PendingIntent.getBroadcast(context, 1337, closeAppIntent, PendingIntent.FLAG_IMMUTABLE);
             final String closeIconName = settings.getCloseIcon();
             final String closeTitle = settings.getCloseTitle();
@@ -225,6 +227,10 @@ public class BackgroundModeService extends Service {
         // Configure the notification channel.
         mChannel.setDescription(description);
         mChannel.setShowBadge(false);
+        if (settings.getSilent()) {
+            mChannel.setSound(null, null);
+            mChannel.enableVibration(false);
+        }
         return mChannel;
     }
 
@@ -233,8 +239,21 @@ public class BackgroundModeService extends Service {
      *
      * @param settings The config settings
      */
-    protected void updateNotification(BackgroundModeSettings settings) {
+    private void updateNotification(BackgroundModeSettings settings) {
         getNotificationManager().notify(NOTIFICATION_ID, createNotification(settings));
+    }
+
+    static boolean isRunning() {
+        return runningService.get() != null;
+    }
+
+    static boolean updateRunningNotification(BackgroundModeSettings settings) {
+        BackgroundModeService service = runningService.get();
+        if (service == null) {
+            return false;
+        }
+        service.updateNotification(settings);
+        return true;
     }
 
     /**

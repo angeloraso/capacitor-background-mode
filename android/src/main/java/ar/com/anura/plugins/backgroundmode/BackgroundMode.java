@@ -9,19 +9,15 @@ import static android.view.WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
-import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
 import android.view.View;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
@@ -37,8 +33,7 @@ public class BackgroundMode {
     private final AppCompatActivity mActivity;
     private final View mWebView;
     private BackgroundModeSettings mSettings;
-    private BackgroundModeService foregroundService;
-    private boolean mShouldUnbind = false;
+    private boolean mServiceStarted = false;
     private PowerManager.WakeLock wakeLock;
 
     @Nullable
@@ -68,26 +63,22 @@ public class BackgroundMode {
         mWebView = webView;
 
         mSettings = new BackgroundModeSettings.Builder().build();
+        mServiceStarted = BackgroundModeService.isRunning();
+        mIsDisabled = !mServiceStarted;
 
-        activityResultLauncher = activity.registerForActivityResult(
-        new ActivityResultContracts.StartActivityForResult(),
-        result -> disableBatteryOptimizationCallback.execute(isIgnoringBatteryOptimizations()));
+        activityResultLauncher = activity.registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), (result) -> {
+            if (disableBatteryOptimizationCallback != null) {
+                disableBatteryOptimizationCallback.execute(isIgnoringBatteryOptimizations());
+                disableBatteryOptimizationCallback = null;
+            }
+        });
     }
-
-    private final ServiceConnection mConnection = new ServiceConnection() {
-        public void onServiceConnected(ComponentName className, IBinder iBinder) {
-            foregroundService = ((BackgroundModeService.LocalBinder) iBinder).getService();
-        }
-
-        public void onServiceDisconnected(ComponentName className) {
-            foregroundService = null;
-        }
-    };
 
     public void onStop() {
         mInBackground = true;
-        assert backgroundModeEventListener != null;
-        backgroundModeEventListener.onBackgroundModeEvent(EVENT_APP_IN_BACKGROUND);
+        if (backgroundModeEventListener != null) {
+            backgroundModeEventListener.onBackgroundModeEvent(EVENT_APP_IN_BACKGROUND);
+        }
 
         if (!isEnabled() || !isIgnoringBatteryOptimizations()) {
             return;
@@ -98,18 +89,7 @@ public class BackgroundMode {
          * */
         if (mSettings.isDisableWebViewOptimization()) {
             // Wake up the app one second after the WebView has put it to sleep
-            Thread thread = new Thread(
-                () -> {
-                    try {
-                        Thread.sleep(1000);
-                        mWebView.dispatchWindowVisibilityChanged(View.VISIBLE);
-                    } catch (InterruptedException e) {
-                        Log.d(TAG, "onStop error" + e.getMessage());
-                    }
-                }
-            );
-
-            thread.start();
+            mWebView.postDelayed(() -> mWebView.dispatchWindowVisibilityChanged(View.VISIBLE), 1000);
         }
     }
 
@@ -135,13 +115,14 @@ public class BackgroundMode {
     }
 
     public boolean isMicrophoneEnabled() {
-        return isMicrophonePermissionGranted() && !isMicrophoneMuted();
+        return isMicrophonePermissionGranted();
     }
 
     public void onResume() {
         mInBackground = false;
-        assert backgroundModeEventListener != null;
-        backgroundModeEventListener.onBackgroundModeEvent(EVENT_APP_IN_FOREGROUND);
+        if (backgroundModeEventListener != null) {
+            backgroundModeEventListener.onBackgroundModeEvent(EVENT_APP_IN_FOREGROUND);
+        }
 
         if (mScheduleStartService) {
             startService(mSettings);
@@ -149,8 +130,8 @@ public class BackgroundMode {
     }
 
     public void onDestroy() {
-        stopService();
-        android.os.Process.killProcess(android.os.Process.myPid());
+        releaseWakeLock();
+        backgroundModeEventListener = null;
     }
 
     public void enable(final BackgroundModeSettings settings) {
@@ -174,36 +155,32 @@ public class BackgroundMode {
             return;
         }
 
-        if (mIsDisabled || mShouldUnbind || !isMicrophoneEnabled() || !areNotificationsEnabled()) {
+        if (mIsDisabled || BackgroundModeService.isRunning() || !isMicrophoneEnabled() || !areNotificationsEnabled()) {
             return;
         }
 
         Intent intent = new Intent(mContext, BackgroundModeService.class);
         intent.putExtra("settings", settings);
 
-        mContext.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         mContext.startForegroundService(intent);
-        mShouldUnbind = true;
+        mServiceStarted = true;
         mScheduleStartService = false;
     }
 
     private void stopService() {
-        if (!mShouldUnbind) {
+        if (!mServiceStarted && !BackgroundModeService.isRunning()) {
             return;
         }
 
         Intent intent = new Intent(mContext, BackgroundModeService.class);
-        mContext.unbindService(mConnection);
         mContext.stopService(intent);
-        mShouldUnbind = false;
+        mServiceStarted = false;
         mSettings = new BackgroundModeSettings.Builder().build();
     }
 
     public void updateNotification(BackgroundModeSettings settings) {
         mSettings = mSettings.merge(settings);
-        if (mShouldUnbind && foregroundService != null) {
-            foregroundService.updateNotification(mSettings);
-        }
+        BackgroundModeService.updateRunningNotification(mSettings);
     }
 
     public boolean isIgnoringBatteryOptimizations() {
@@ -216,6 +193,7 @@ public class BackgroundMode {
     public void requestDisableBatteryOptimizations(Callback callback) {
         if (isIgnoringBatteryOptimizations()) {
             callback.execute(true);
+            return;
         }
 
         disableBatteryOptimizationCallback = callback;
@@ -259,7 +237,9 @@ public class BackgroundMode {
 
         try {
             Intent launchIntent = mActivity.getPackageManager().getLaunchIntentForPackage(mActivity.getPackageName());
-            assert launchIntent != null;
+            if (launchIntent == null) {
+                return;
+            }
             launchIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             clearScreenAndKeyguardFlags();
             mActivity.startActivity(launchIntent);
@@ -278,17 +258,15 @@ public class BackgroundMode {
     }
 
     public boolean isActive() {
-        return mInBackground;
+        return BackgroundModeService.isRunning();
     }
 
     private void clearScreenAndKeyguardFlags() {
-        mActivity.runOnUiThread(
-            () -> {
-                mActivity.setShowWhenLocked(false);
-                mActivity.setTurnScreenOn(false);
-                mActivity.getWindow().clearFlags(FLAGS);
-            }
-        );
+        mActivity.runOnUiThread(() -> {
+            mActivity.setShowWhenLocked(false);
+            mActivity.setTurnScreenOn(false);
+            mActivity.getWindow().clearFlags(FLAGS);
+        });
     }
 
     public void wakeUp() {
@@ -329,13 +307,11 @@ public class BackgroundMode {
     }
 
     private void addScreenAndKeyguardFlags() {
-        mActivity.runOnUiThread(
-            () -> {
-                mActivity.setShowWhenLocked(true);
-                mActivity.setTurnScreenOn(true);
-                mActivity.getWindow().addFlags(FLAGS);
-            }
-        );
+        mActivity.runOnUiThread(() -> {
+            mActivity.setShowWhenLocked(true);
+            mActivity.setTurnScreenOn(true);
+            mActivity.getWindow().addFlags(FLAGS);
+        });
     }
 
     public void setBackgroundModeEventListener(@Nullable BackgroundModeEventListener backgroundModeEventListener) {
@@ -344,6 +320,8 @@ public class BackgroundMode {
 
     private void openApp() {
         Intent intent = mContext.getPackageManager().getLaunchIntentForPackage(mContext.getPackageName());
-        mActivity.startActivity(intent);
+        if (intent != null) {
+            mActivity.startActivity(intent);
+        }
     }
 }

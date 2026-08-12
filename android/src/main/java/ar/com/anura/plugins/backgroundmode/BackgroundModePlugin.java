@@ -17,8 +17,14 @@ import com.getcapacitor.annotation.PermissionCallback;
 @CapacitorPlugin(
     name = "BackgroundMode",
     permissions = {
-        @Permission(alias = BackgroundModePlugin.BACKGROUND_MODE_NOTIFICATIONS_PERMISSION, strings = { Manifest.permission.POST_NOTIFICATIONS }),
-        @Permission(alias = BackgroundModePlugin.BACKGROUND_MODE_MICROPHONE_PERMISSION, strings = { Manifest.permission.FOREGROUND_SERVICE_MICROPHONE, Manifest.permission.RECORD_AUDIO })
+        @Permission(
+            alias = BackgroundModePlugin.BACKGROUND_MODE_NOTIFICATIONS_PERMISSION,
+            strings = { Manifest.permission.POST_NOTIFICATIONS }
+        ),
+        @Permission(
+            alias = BackgroundModePlugin.BACKGROUND_MODE_MICROPHONE_PERMISSION,
+            strings = { Manifest.permission.FOREGROUND_SERVICE_MICROPHONE, Manifest.permission.RECORD_AUDIO }
+        )
     }
 )
 public class BackgroundModePlugin extends Plugin {
@@ -118,24 +124,24 @@ public class BackgroundModePlugin extends Plugin {
         Boolean disableWebViewOptimization = call.getBoolean("disableWebViewOptimization");
 
         return new BackgroundModeSettings.Builder()
-          .title(title)
-          .text(text)
-          .subText(subText)
-          .bigText(bigText)
-          .resume(resume)
-          .silent(silent)
-          .hidden(hidden)
-          .color(color)
-          .icon(icon)
-          .channelName(channelName)
-          .channelDescription(channelDescription)
-          .allowClose(allowClose)
-          .closeIcon(closeIcon)
-          .closeTitle(closeTitle)
-          .showWhen(showWhen)
-          .visibility(Visibility.valueOfLabel(visibility))
-          .disableWebViewOptimization(disableWebViewOptimization)
-          .buildRaw();
+            .title(title)
+            .text(text)
+            .subText(subText)
+            .bigText(bigText)
+            .resume(resume)
+            .silent(silent)
+            .hidden(hidden)
+            .color(color)
+            .icon(icon)
+            .channelName(channelName)
+            .channelDescription(channelDescription)
+            .allowClose(allowClose)
+            .closeIcon(closeIcon)
+            .closeTitle(closeTitle)
+            .showWhen(showWhen)
+            .visibility(Visibility.valueOfLabel(visibility))
+            .disableWebViewOptimization(disableWebViewOptimization)
+            .buildRaw();
     }
 
     @PluginMethod
@@ -177,6 +183,14 @@ public class BackgroundModePlugin extends Plugin {
         boolean isEnabled = backgroundMode.isEnabled();
         JSObject res = new JSObject();
         res.put("enabled", isEnabled);
+        call.resolve(res);
+    }
+
+    @PluginMethod
+    public void isActive(PluginCall call) {
+        boolean isActive = backgroundMode.isActive();
+        JSObject res = new JSObject();
+        res.put("activated", isActive);
         call.resolve(res);
     }
 
