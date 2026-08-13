@@ -71,7 +71,8 @@ public class BackgroundModeService extends Service {
     }
 
     /**
-     * Redeliver the settings if Android has to recreate the service after killing its process.
+     * Do not recreate the service after Android kills its process. Background mode
+     * must be enabled again when the application starts a new process.
      */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -83,7 +84,7 @@ public class BackgroundModeService extends Service {
 
         keepAwake(settings);
 
-        return START_REDELIVER_INTENT;
+        return START_NOT_STICKY;
     }
 
     /**
