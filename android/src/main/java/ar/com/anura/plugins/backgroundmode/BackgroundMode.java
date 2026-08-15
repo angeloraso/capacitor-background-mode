@@ -15,6 +15,8 @@ import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.PowerManager;
 import android.util.Log;
 import android.view.View;
@@ -89,7 +91,10 @@ public class BackgroundMode {
          * */
         if (mSettings.isDisableWebViewOptimization()) {
             // Wake up the app one second after the WebView has put it to sleep
-            mWebView.postDelayed(() -> mWebView.dispatchWindowVisibilityChanged(View.VISIBLE), 1000);
+            new Handler(Looper.getMainLooper()).postDelayed(
+                () -> mWebView.dispatchWindowVisibilityChanged(View.VISIBLE),
+                1000
+            );
         }
     }
 
