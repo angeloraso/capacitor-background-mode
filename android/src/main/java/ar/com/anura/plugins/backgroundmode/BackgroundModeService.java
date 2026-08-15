@@ -104,11 +104,12 @@ public class BackgroundModeService extends Service {
     @SuppressLint("WakelockTimeout")
     private void keepAwake(final BackgroundModeSettings settings) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            startForeground(
-                NOTIFICATION_ID,
-                createNotification(settings),
-                FOREGROUND_SERVICE_TYPE_SPECIAL_USE | FOREGROUND_SERVICE_TYPE_MICROPHONE
-            );
+            int foregroundServiceType = FOREGROUND_SERVICE_TYPE_SPECIAL_USE;
+            if (settings.isAllowMicrophoneInBackground()) {
+                foregroundServiceType |= FOREGROUND_SERVICE_TYPE_MICROPHONE;
+            }
+
+            startForeground(NOTIFICATION_ID, createNotification(settings), foregroundServiceType);
         } else {
             startForeground(NOTIFICATION_ID, createNotification(settings));
         }

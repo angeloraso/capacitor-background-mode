@@ -17,17 +17,22 @@ public class BackgroundModeSettingsTest {
         assertEquals(BackgroundModeSettings.DEFAULT_VISIBILITY, settings.getVisibility());
         assertFalse(settings.getSilent());
         assertTrue(settings.isDisableWebViewOptimization());
+        assertFalse(settings.isAllowMicrophoneInBackground());
     }
 
     @Test
     public void mergeOnlyOverridesProvidedValues() {
         BackgroundModeSettings current = new BackgroundModeSettings.Builder().title("Call in progress").silent(false).build();
-        BackgroundModeSettings override = new BackgroundModeSettings.Builder().silent(true).buildRaw();
+        BackgroundModeSettings override = new BackgroundModeSettings.Builder()
+            .silent(true)
+            .allowMicrophoneInBackground(true)
+            .buildRaw();
 
         BackgroundModeSettings merged = current.merge(override);
 
         assertEquals("Call in progress", merged.getTitle());
         assertTrue(merged.getSilent());
+        assertTrue(merged.isAllowMicrophoneInBackground());
         assertEquals(BackgroundModeSettings.DEFAULT_TEXT, merged.getText());
     }
 

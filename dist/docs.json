@@ -391,6 +391,18 @@
           "type": "boolean"
         },
         {
+          "name": "allowMicrophoneInBackground",
+          "tags": [
+            {
+              "text": "false",
+              "name": "default"
+            }
+          ],
+          "docs": "Allows the foreground service to use the microphone while the app is in the background.",
+          "complexTypes": [],
+          "type": "boolean"
+        },
+        {
           "name": "visibility",
           "tags": [],
           "docs": "",

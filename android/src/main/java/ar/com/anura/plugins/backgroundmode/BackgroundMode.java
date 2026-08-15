@@ -160,7 +160,12 @@ public class BackgroundMode {
             return;
         }
 
-        if (mIsDisabled || BackgroundModeService.isRunning() || !isMicrophoneEnabled() || !areNotificationsEnabled()) {
+        if (
+            mIsDisabled ||
+            BackgroundModeService.isRunning() ||
+            (settings.isAllowMicrophoneInBackground() && !isMicrophoneEnabled()) ||
+            !areNotificationsEnabled()
+        ) {
             return;
         }
 

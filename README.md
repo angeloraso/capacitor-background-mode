@@ -11,6 +11,23 @@ npm install @anuradev/capacitor-background-mode
 npx cap sync
 ```
 
+### Background microphone access
+
+Background microphone access is disabled by default. To enable it, declare the
+required permissions in the consuming application's `AndroidManifest.xml`:
+
+```xml
+<uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+<uses-permission android:name="android.permission.RECORD_AUDIO" />
+```
+
+Request the microphone permission and enable the foreground service with:
+
+```typescript
+await BackgroundMode.requestMicrophonePermission();
+await BackgroundMode.enable({ allowMicrophoneInBackground: true });
+```
+
 ## API
 
 <docgen-index>
@@ -278,25 +295,26 @@ removeAllListeners() => Promise<void>
 
 #### ISettings
 
-| Prop                             | Type                                           |
-| -------------------------------- | ---------------------------------------------- |
-| **`title`**                      | <code>string</code>                            |
-| **`text`**                       | <code>string</code>                            |
-| **`subText`**                    | <code>string</code>                            |
-| **`bigText`**                    | <code>boolean</code>                           |
-| **`resume`**                     | <code>boolean</code>                           |
-| **`silent`**                     | <code>boolean</code>                           |
-| **`hidden`**                     | <code>boolean</code>                           |
-| **`color`**                      | <code>string</code>                            |
-| **`icon`**                       | <code>string</code>                            |
-| **`channelName`**                | <code>string</code>                            |
-| **`channelDescription`**         | <code>string</code>                            |
-| **`allowClose`**                 | <code>boolean</code>                           |
-| **`closeIcon`**                  | <code>string</code>                            |
-| **`closeTitle`**                 | <code>string</code>                            |
-| **`showWhen`**                   | <code>boolean</code>                           |
-| **`disableWebViewOptimization`** | <code>boolean</code>                           |
-| **`visibility`**                 | <code>'public' \| 'private' \| 'secret'</code> |
+| Prop                              | Type                                           | Description                                                                             | Default            |
+| --------------------------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------- | ------------------ |
+| **`title`**                       | <code>string</code>                            |                                                                                         |                    |
+| **`text`**                        | <code>string</code>                            |                                                                                         |                    |
+| **`subText`**                     | <code>string</code>                            |                                                                                         |                    |
+| **`bigText`**                     | <code>boolean</code>                           |                                                                                         |                    |
+| **`resume`**                      | <code>boolean</code>                           |                                                                                         |                    |
+| **`silent`**                      | <code>boolean</code>                           |                                                                                         |                    |
+| **`hidden`**                      | <code>boolean</code>                           |                                                                                         |                    |
+| **`color`**                       | <code>string</code>                            |                                                                                         |                    |
+| **`icon`**                        | <code>string</code>                            |                                                                                         |                    |
+| **`channelName`**                 | <code>string</code>                            |                                                                                         |                    |
+| **`channelDescription`**          | <code>string</code>                            |                                                                                         |                    |
+| **`allowClose`**                  | <code>boolean</code>                           |                                                                                         |                    |
+| **`closeIcon`**                   | <code>string</code>                            |                                                                                         |                    |
+| **`closeTitle`**                  | <code>string</code>                            |                                                                                         |                    |
+| **`showWhen`**                    | <code>boolean</code>                           |                                                                                         |                    |
+| **`disableWebViewOptimization`**  | <code>boolean</code>                           |                                                                                         |                    |
+| **`allowMicrophoneInBackground`** | <code>boolean</code>                           | Allows the foreground service to use the microphone while the app is in the background. | <code>false</code> |
+| **`visibility`**                  | <code>'public' \| 'private' \| 'secret'</code> |                                                                                         |                    |
 
 
 #### NotificationPermissionStatus

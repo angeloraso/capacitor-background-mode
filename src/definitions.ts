@@ -24,6 +24,11 @@ export interface ISettings {
   closeTitle: string;
   showWhen: boolean;
   disableWebViewOptimization: boolean;
+  /**
+   * Allows the foreground service to use the microphone while the app is in the background.
+   * @default false
+   */
+  allowMicrophoneInBackground: boolean;
   visibility: 'public' | 'private' | 'secret';
 }
 export interface BackgroundModePlugin {
